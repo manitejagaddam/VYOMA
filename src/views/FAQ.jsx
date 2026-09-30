@@ -6,6 +6,8 @@ import { Btn } from "@/components/shared/Btn";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
 
+const workAutomation = "/assets/work-automation.png";
+
 export function FAQ({}) {
   const [open, setOpen] = useState(0);
   const { data: faqs, loading } = useSupabaseQuery(
