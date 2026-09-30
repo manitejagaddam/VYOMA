@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://vyomatechnologies.com/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/services</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/solutions</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/work</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/about</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/team</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/process</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/technologies</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/engagement-models</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/insights</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/faq</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/contact</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://vyomatechnologies.com/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+</urlset>
