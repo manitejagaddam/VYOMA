@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  env: {
+    VYOMA_DB_URL: process.env.VYOMA_DB_URL || "",
+    VYOMA_DB_KEY: process.env.VYOMA_DB_KEY || "",
+  },
   turbopack: {},
   images: {
     remotePatterns: [
