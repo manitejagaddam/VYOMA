@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { invalidateCache } from "@/hooks/useData";
+import { useRouter } from "next/navigation";
 
 /* ── Schema definition: what fields appear in each table's edit form ── */
 const SCHEMAS = {
@@ -354,6 +355,7 @@ function EditDrawer({ table, item, onClose, onSaved }) {
 
 /* ── Main Admin Component ───────────────────────────────────── */
 export function Admin({}) {
+  const router = useRouter();
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("projects");
@@ -426,7 +428,7 @@ export function Admin({}) {
           <span style={{ fontSize: "12px", color: "#4a5364", fontFamily: "'DM Mono', monospace" }}>CMS Dashboard</span>
         </div>
         <div style={S.topbarActions}>
-          <button onClick={() => go("/")} style={S.btnGhost}>← View Site</button>
+          <button onClick={() => router.push("/")} style={S.btnGhost}>← View Site</button>
           <button onClick={() => supabase.auth.signOut()} style={S.btnGhost}>Sign Out</button>
         </div>
       </div>

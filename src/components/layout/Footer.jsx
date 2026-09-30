@@ -1,9 +1,14 @@
+"use client";
 /** components/layout/Footer.jsx */
+import { usePathname } from "next/navigation";
 import { Link } from "../shared/Link";
 import { FloatingContactDock } from "../shared/FloatingContactDock";
 const logo = "/assets/Logo.png";
 
 export function Footer({ go }) {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="site-footer has-bg-grid">
       <div className="footer-brand">

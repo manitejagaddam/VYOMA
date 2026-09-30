@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import NextLink from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { HoveredLink, Menu, MenuItem } from "@/components/ui/navbar-menu";
 import { cn } from "@/lib/utils";
@@ -37,8 +37,11 @@ export function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const nav = (to: string) => { router.push(to); setMobileOpen(false); };
+
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <>
