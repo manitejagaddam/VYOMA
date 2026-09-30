@@ -1,3 +1,3 @@
 "use client";
-import { Home } from "@/pages/Home";
+import { Home } from "@/views/Home";
 export function HomeClient(props) { return <Home {...props} />; }

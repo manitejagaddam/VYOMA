@@ -10,7 +10,7 @@ import { FinalCTA } from "@/components/shared/FinalCTA";
 
 const GROUPS = ["Leadership", "Design", "Engineering", "AI & ML", "Quality & Delivery"];
 
-export function Team({}) {
+export function Team(props) {
   const { data: team, loading } = useSupabaseQuery(
     "team",
     { order: { column: "order_index" } }

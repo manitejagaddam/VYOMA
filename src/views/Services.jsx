@@ -17,7 +17,7 @@ import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { FinalCTA } from "@/components/shared/FinalCTA";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 
-export function Services({}) {
+export function Services(props) {
   const { data: services, loading } = useSupabaseQuery(
     "services",
     { order: { column: "id" } }

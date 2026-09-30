@@ -6,7 +6,7 @@ const supabaseAnonKey = process.env.VYOMA_DB_KEY;
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
     "[VYOMA] Supabase env vars missing. Using local fallback data.\n" +
-    "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local"
+    "Set VYOMA_DB_URL and VYOMA_DB_KEY in .env.local"
   );
 }
 

@@ -5,7 +5,7 @@ import { Link } from "../shared/Link";
 import { FloatingContactDock } from "../shared/FloatingContactDock";
 const logo = "/assets/Logo.png";
 
-export function Footer({ go }) {
+export function Footer() {
   const pathname = usePathname();
   if (pathname?.startsWith("/admin")) return null;
 

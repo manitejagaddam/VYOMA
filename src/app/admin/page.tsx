@@ -1,3 +1,3 @@
 "use client";
-import { Admin } from "@/pages/Admin";
+import { Admin } from "@/views/Admin";
 export default function AdminPage() { return <Admin />; }

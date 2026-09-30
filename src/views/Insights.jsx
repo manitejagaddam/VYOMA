@@ -6,7 +6,7 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
 
-export function Insights({}) {
+export function Insights(props) {
   const { data: posts, loading } = useSupabaseQuery(
     "posts",
     { filter: { published: true }, order: { column: "published_at", ascending: false } }

@@ -8,7 +8,7 @@ import { useSupabaseQuery } from "@/hooks/useData";
 
 const FILTERS = ["ALL", "WEB", "MOBILE", "AI", "SAAS", "SOFTWARE", "DESIGN"];
 
-export function Work({}) {
+export function Work(props) {
   const [filter, setFilter] = useState("ALL");
   const { data: projects, loading } = useSupabaseQuery(
     "projects",
