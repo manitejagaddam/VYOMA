@@ -235,11 +235,15 @@ html {
   .btn-outline-light:hover { background: rgba(255,255,255,0.1); color: #fff; }
   .btn-cta {
     @apply font-bold hover:-translate-y-px;
-    background: var(--accent-2);
+    background: linear-gradient(135deg, #D4AF37 0%, #FFDF00 30%, #F5E17A 60%, #C0C0C0 100%);
     color: #0a0b0f;
-    border-color: var(--accent-2);
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
   }
-  .btn-cta:hover { filter: brightness(1.1); }
+  .btn-cta:hover { 
+    background: linear-gradient(135deg, #FFDF00 0%, #FFF5A0 30%, #F5E17A 60%, #E0E0E0 100%);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); 
+  }
   
   /* ── Background Patterns (Aceternity) ── */
   .has-bg-grid, .has-bg-dot {

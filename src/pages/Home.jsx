@@ -171,32 +171,33 @@ function WhatWeBuild({}) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 w-full">
           {services.map(b => (
             <div className="w-full" key={b.slug}>
-              <div className="bg-gray-50 relative overflow-hidden group/card dark:hover:shadow-2xl dark:hover:shadow-yellow-500/[0.15] dark:bg-[#0f0c00] dark:border-yellow-900/30 border-black/[0.1] w-full h-full rounded-xl p-6 border flex flex-col justify-between transition-shadow duration-300" style={{background: 'linear-gradient(145deg, #0f0c00 0%, #1a1200 60%, #0f0900 100%)'}}>
-                <Spotlight className="-top-40 left-0 md:-top-20 md:-left-32 opacity-50 transition-opacity duration-300 group-hover/card:opacity-100" fill="white" />
-                <div className="relative z-10">
+              <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
+                <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
+                
+                <div className="relative z-10 flex flex-col h-full">
                   <div className="w-full mb-6">
                     {b.image_url ? (
-                      <img src={b.image_url} alt={b.title} loading="lazy" className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl" />
+                      <img src={b.image_url} alt={b.title} loading="lazy" className="h-60 w-full object-cover rounded-xl shadow-lg" />
                     ) : (
-                      <div className="h-60 w-full bg-neutral-200 dark:bg-neutral-800 rounded-xl"></div>
+                      <div className="h-60 w-full bg-neutral-200 dark:bg-neutral-800/50 rounded-xl"></div>
                     )}
                   </div>
-                  <div className="text-lg font-bold text-neutral-800 dark:text-neutral-100 mb-4 tracking-wide uppercase font-mono">
-                    {b.no} <span className="text-[#D4AF37] mx-1">•</span> {b.title}
-                  </div>
-                  <ul className="text-neutral-500 text-sm mt-2 dark:text-neutral-300 space-y-2">
+                  <p className="eyebrow mt-4 mb-2">0{b.no}</p>
+                  <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-4">
+                    {b.title}
+                  </h3>
+                  <p className="text-neutral-500 text-sm mt-2 dark:text-neutral-400 space-y-2 flex-grow">
                     {(b.deliverables || []).slice(0, 5).map(i => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="text-[10px] text-[#D4AF37]">▶</span> {i}
-                      </li>
+                      <span key={i} className="block mb-2">
+                        {i}
+                      </span>
                     ))}
-                  </ul>
-                </div>
-                <div className="flex justify-start items-center mt-10">
-                  <div>
-                    <Link to={`/services/${b.slug}`} className="px-6 py-3 rounded-xl text-[#0a0800] text-sm font-bold shadow-lg transition-transform hover:scale-105 inline-block" style={{background: 'linear-gradient(135deg, #D4AF37 0%, #F5E17A 50%, #C0C0C0 100%)'}}>
-                      Explore Service →
-                    </Link>
+                  </p>
+                  
+                  <div className="mt-8">
+                    <Btn to={`/services/${b.slug}`} variant="cta">
+                      Explore Service
+                    </Btn>
                   </div>
                 </div>
               </div>
