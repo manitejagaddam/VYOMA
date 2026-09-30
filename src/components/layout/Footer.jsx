@@ -1,7 +1,7 @@
 "use client";
 /** components/layout/Footer.jsx */
 import { usePathname } from "next/navigation";
-import { Link } from "../shared/Link";
+import Link from "next/link";
 import { FloatingContactDock } from "../shared/FloatingContactDock";
 const logo = "/assets/Logo.png";
 
@@ -28,7 +28,7 @@ export function Footer() {
           ["SaaS",              "/services/saas-development"],
           ["Automation",        "/services/automation-integrations"],
           ["Digital Marketing", "/services/digital-marketing"],
-        ].map(([label, href]) => <Link key={href} to={href} go={go}>{label}</Link>)}
+        ].map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
       </div>
 
       <div className="footer-col">
@@ -38,7 +38,7 @@ export function Footer() {
           ["Business Automation", "/solutions/business-automation"],
           ["AI Transformation",   "/solutions/ai-transformation"],
           ["Enterprise",          "/solutions/enterprise-software"],
-        ].map(([label, href]) => <Link key={href} to={href} go={go}>{label}</Link>)}
+        ].map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
       </div>
 
       <div className="footer-col">
@@ -52,13 +52,13 @@ export function Footer() {
           ["Insights",    "/insights"],
           ["FAQ",         "/faq"],
           ["Contact",     "/contact"],
-        ].map(([label, href]) => <Link key={href} to={href} go={go}>{label}</Link>)}
+        ].map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
       </div>
 
       <div className="footer-col">
         <span>Legal</span>
-        <Link to="/privacy" go={go}>Privacy Policy</Link>
-        <Link to="/terms"   go={go}>Terms</Link>
+        <Link href="/privacy">Privacy Policy</Link>
+        <Link href="/terms">Terms</Link>
         <div className="footer-bottom-info">
           <p>© 2025 VYOMA Technologies</p>
           <p>hello@vyoma.studio</p>
