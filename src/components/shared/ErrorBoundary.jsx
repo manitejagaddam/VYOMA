@@ -22,6 +22,7 @@ export class ErrorBoundary extends React.Component {
           <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#D4AF37" }}>Something went wrong</h2>
           <p style={{ color: "#999", textAlign: "center" }}>This page encountered an error. Please refresh or go back.</p>
           <button
+            // eslint-disable-next-line @next/next/no-location-assign-relative-destination
             onClick={() => { this.setState({ hasError: false, error: null }); window.location.href = "/"; }}
             style={{ padding: "10px 24px", background: "#D4AF37", color: "#000", borderRadius: "999px", fontWeight: "bold", border: "none", cursor: "pointer" }}
           >

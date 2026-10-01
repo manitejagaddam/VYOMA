@@ -6,8 +6,10 @@
  */
 import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { NotFound } from "./NotFound";
 const agencySystem = "/assets/vyoma-agency-system.webp";

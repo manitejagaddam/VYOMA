@@ -2,7 +2,7 @@
 /** components/shared/OverviewBar.jsx
  *  Homepage stat + pillar overview strip — sits directly below the hero.
  */
-export function OverviewBar({ go }) {
+export function OverviewBar() {
   const stats = [
     { value: "9+",  label: "Services",        sub: "Design · Engineering · AI" },
     { value: "5+",  label: "Solutions",        sub: "Startups → Enterprise" },

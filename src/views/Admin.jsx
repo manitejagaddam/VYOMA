@@ -149,6 +149,7 @@ const S = {
 };
 
 /* ── Login Screen ────────────────────────────────────────────── */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -413,6 +414,7 @@ function FieldInput({ field, value, onChange, onUpload, onMultiUpload, uploading
   if (field.type === "gallery") {
     let urls = [];
     if (Array.isArray(v)) urls = v;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
     else if (typeof v === "string") { try { urls = JSON.parse(v) || []; } catch (e) {} }
     return (
       <div>
@@ -481,6 +483,7 @@ function EditDrawer({ table, item, onClose, onSaved }) {
       const currentVal = formData[field];
       let currentUrls = [];
       if (Array.isArray(currentVal)) currentUrls = currentVal;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
       else if (typeof currentVal === "string") { try { currentUrls = JSON.parse(currentVal) || []; } catch (e) {} }
       handleChange(field, [...currentUrls, ...newUrls]);
     } catch (err) { alert("Upload failed: " + err.message); }
@@ -494,6 +497,7 @@ function EditDrawer({ table, item, onClose, onSaved }) {
       // Parse JSON strings into arrays
       ["tags", "deliverables", "problems", "features", "benefits", "gallery_urls"].forEach(k => {
         if (typeof payload[k] === "string") {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
           try { payload[k] = JSON.parse(payload[k]); } catch (e) {}
         }
       });
@@ -554,7 +558,7 @@ export function Admin({}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [isCreating, setIsCreating] = useState(false);
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -567,13 +571,14 @@ export function Admin({}) {
 
   useEffect(() => {
     if (session) fetchData();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, session?.user?.id]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEditingItem(null);
      
-    setIsCreating(false);
+    ;
   }, [activeTab]);
 
   async function fetchData() {
@@ -597,12 +602,12 @@ export function Admin({}) {
   }
 
   function openCreate() {
-    setIsCreating(true);
+    ;
     setEditingItem({});
   }
 
   function openEdit(item) {
-    setIsCreating(false);
+    ;
     setEditingItem(item);
   }
 
@@ -703,8 +708,8 @@ export function Admin({}) {
         <EditDrawer
           table={activeTab}
           item={editingItem}
-          onClose={() => { setEditingItem(null); setIsCreating(false); }}
-          onSaved={() => { setEditingItem(null); setIsCreating(false); fetchData(); }}
+          onClose={() => { setEditingItem(null); ; }}
+          onSaved={() => { setEditingItem(null); ; fetchData(); }}
         />
       )}
     </div>

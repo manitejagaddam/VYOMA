@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, useMotionValue } from "motion/react";
-import { cn } from "@/lib/utils";
+
 
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);

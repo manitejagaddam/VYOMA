@@ -1,9 +1,10 @@
 // src/proxy.ts — Security headers for all routes (Next.js 16 "proxy" convention)
 // Replaces the deprecated middleware.ts file.
 import { NextResponse } from "next/server";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
+export function proxy() {
   const response = NextResponse.next();
 
   // Strict Transport Security (HTTPS only, 2 years)

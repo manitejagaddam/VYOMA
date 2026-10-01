@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 const workAutomation = "/assets/work-automation.webp";

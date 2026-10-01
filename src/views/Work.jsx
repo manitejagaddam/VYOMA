@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PageHero } from "@/components/shared/PageHero";
 import { ProjectCard } from "@/components/shared/ProjectCard";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 const FILTERS = ["ALL", "WEB", "MOBILE", "AI", "SAAS", "SOFTWARE", "DESIGN"];

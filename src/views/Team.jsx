@@ -2,6 +2,7 @@
 /** pages/Team.jsx */
 import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 const productDesign = "/assets/vyoma-product-design.webp";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";

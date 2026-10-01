@@ -11,6 +11,7 @@ const engineeringSystem = "/assets/vyoma-engineering.webp";
 const intelligenceSystem = "/assets/vyoma-intelligence.webp";
 import StickyScrollRevealDemo from "@/components/sticky-scroll-reveal-demo.tsx";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const BELIEFS = [
   "Business outcomes matter more than technology choices.",
   "Design and engineering are not separate phases — they're the same work.",

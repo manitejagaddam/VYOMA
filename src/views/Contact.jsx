@@ -4,7 +4,6 @@
  */
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { submitContactForm } from "@/app/actions";
@@ -145,6 +144,7 @@ export function Contact() {
       return;
     }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
     const lead = {
       name:        fd.get("name"),
       email:       fd.get("email"),

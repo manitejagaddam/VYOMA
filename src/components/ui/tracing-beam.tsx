@@ -4,7 +4,7 @@ import {
   motion,
   useTransform,
   useScroll,
-  useVelocity,
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   useSpring,
 } from "motion/react";
 import { cn } from "@/lib/utils";

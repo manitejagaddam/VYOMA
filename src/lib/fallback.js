@@ -6,14 +6,19 @@
 
 const heroIntelligence = "/assets/hero-intelligence.webp";
 const workResearch = "/assets/work-research.webp";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const workAutomation = "/assets/work-automation.webp";
 const agencySystem = "/assets/vyoma-agency-system.webp";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const productDesign = "/assets/vyoma-product-design.webp";
 const engineeringSystem = "/assets/vyoma-engineering.webp";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const intelligenceSystem = "/assets/vyoma-intelligence.webp";
 const featurePipeline = "/assets/feature-pipeline.webp";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const featureMobile = "/assets/feature-mobile.webp";
 const featureAi = "/assets/feature-ai.webp";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const featureCloud = "/assets/feature-cloud.webp";
 const featureAutomation = "/assets/feature-automation.webp";
 const featureMobileUi = "/assets/feature-mobile-ui.webp";

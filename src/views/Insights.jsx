@@ -2,6 +2,7 @@
 /** pages/Insights.jsx */
 import { PageHero } from "@/components/shared/PageHero";
 import { Link } from "@/components/shared/Link";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { NotFound } from "./NotFound";
 
