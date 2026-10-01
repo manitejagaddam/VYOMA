@@ -2,11 +2,13 @@
 /** pages/Contact.jsx — Sends inquiry to Supabase `leads` table.
  *  Supports ?service= query param for dynamic pre-fill from service/solution pages.
  */
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { submitContactForm } from "@/app/actions";
+import { motion, AnimatePresence } from "motion/react";
+import { IconChevronDown, IconCheck } from "@tabler/icons-react";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 // Maps URL ?service= slug → { label, need, description, placeholders }
 const SERVICE_CONTEXT = {
   "web-development": {
@@ -125,9 +127,17 @@ export function Contact() {
   const serviceSlug = searchParams?.get("service") || null;
   const ctx = serviceSlug ? SERVICE_CONTEXT[serviceSlug] : null;
 
+  const [selectedNeed, setSelectedNeed] = useState(ctx?.need || "");
+  const [selectedStage, setSelectedStage] = useState("");
+  const [selectedTimeline, setSelectedTimeline] = useState("");
+  const [selectedBudget, setSelectedBudget] = useState("");
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  const matchedCtx = Object.values(SERVICE_CONTEXT).find(c => c.need === selectedNeed) || ctx;
+  const currentPlaceholders = matchedCtx?.placeholders || DEFAULT_PLACEHOLDERS;
+  const currentDescription = matchedCtx?.description || "";
 
 
 
@@ -218,10 +228,10 @@ export function Contact() {
           {/* ─── FORM ───────────────────────────────────── */}
           <form key={serviceSlug || "form"} className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
-              <label htmlFor="contact-name">Your name<input id="contact-name" name="name" required placeholder="Name" /></label>
-              <label htmlFor="contact-email">Work email<input id="contact-email" name="email" required type="email" placeholder="you@company.com" /></label>
+              <label htmlFor="contact-name">Your name<input id="contact-name" name="name" required placeholder="Name" suppressHydrationWarning /></label>
+              <label htmlFor="contact-email">Work email<input id="contact-email" name="email" required type="email" placeholder="you@company.com" suppressHydrationWarning /></label>
             </div>
-            <label>Company<input name="company" placeholder="Company or organization" /></label>
+            <label>Company<input name="company" placeholder="Company or organization" suppressHydrationWarning /></label>
 
             {/* Honeypot */}
             <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}>
@@ -229,47 +239,57 @@ export function Contact() {
             </div>
 
             <label>What do you need?
-              <select
+              <CustomSelect
                 name="need"
                 required
-                defaultValue={ctx?.need || ""}
-              >
-                <option value="" disabled>Select a focus</option>
-                {["Website or web application","Mobile application","AI or GenAI solution","Chatbot or conversational AI","SaaS or custom software","UI/UX and product design","Automation or integrations","Other"].map(o => <option key={o}>{o}</option>)}
-              </select>
+                value={selectedNeed}
+                onChange={setSelectedNeed}
+                placeholder="Select a focus"
+                options={["Website or web application","Mobile application","AI or GenAI solution","Chatbot or conversational AI","SaaS or custom software","UI/UX and product design","Automation or integrations","Other"]}
+              />
             </label>
 
             <div className="form-row">
               <label>Project stage
-                <select name="stage" required defaultValue="">
-                  <option value="" disabled>Select a stage</option>
-                  {["Idea","Planning","Prototype","Existing product","Redesign","Scaling"].map(o => <option key={o}>{o}</option>)}
-                </select>
+                <CustomSelect
+                  name="stage"
+                  required
+                  value={selectedStage}
+                  onChange={setSelectedStage}
+                  placeholder="Select a stage"
+                  options={["Idea","Planning","Prototype","Existing product","Redesign","Scaling"]}
+                />
               </label>
               <label>Timeline
-                <select name="timeline" required defaultValue="">
-                  <option value="" disabled>Select a timeline</option>
-                  {["ASAP","1–3 months","3–6 months","Flexible"].map(o => <option key={o}>{o}</option>)}
-                </select>
+                <CustomSelect
+                  name="timeline"
+                  required
+                  value={selectedTimeline}
+                  onChange={setSelectedTimeline}
+                  placeholder="Select a timeline"
+                  options={["ASAP","1–3 months","3–6 months","Flexible"]}
+                />
               </label>
             </div>
 
             <label>Budget range
-              <select name="budget" defaultValue="">
-                <option value="" disabled>Choose a range</option>
-                {["Exploring options","Focused project","Product engagement","Ongoing partnership"].map(o => <option key={o}>{o}</option>)}
-              </select>
+              <CustomSelect
+                name="budget"
+                value={selectedBudget}
+                onChange={setSelectedBudget}
+                placeholder="Choose a range"
+                options={["Exploring options","Focused project","Product engagement","Ongoing partnership"]}
+              />
             </label>
 
-            <div className="mb-4">
-              <label className="mb-2 block">Project description</label>
-              <PlaceholdersAndVanishInput
-                key={serviceSlug}
+            <label>Project description
+              <AnimatedTextarea
+                key={serviceSlug || selectedNeed}
                 name="description"
-                initialValue={ctx?.description || ""}
-                placeholders={ctx?.placeholders || DEFAULT_PLACEHOLDERS}
+                initialValue={currentDescription}
+                placeholders={currentPlaceholders}
               />
-            </div>
+            </label>
 
             {error && <p style={{ color: "var(--accent-warm)", fontSize: 13 }}>{error}</p>}
 
@@ -287,7 +307,7 @@ export function Contact() {
 
             <div className="form-footer">
               <span>NDAs available on request. Replies within one business day.</span>
-              <button type="submit" className="submit-btn" disabled={submitting}>
+              <button type="submit" className="submit-btn" disabled={submitting} suppressHydrationWarning>
                 {submitting ? "Sending…" : "Submit Project Inquiry →"}
               </button>
             </div>
@@ -295,5 +315,132 @@ export function Contact() {
         </>
       )}
     </section>
+  );
+}
+
+function AnimatedTextarea({ placeholders, initialValue, name }) {
+  const [index, setIndex] = useState(0);
+  const [value, setValue] = useState(initialValue || "");
+
+  useEffect(() => {
+    setValue(initialValue || "");
+  }, [initialValue]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [placeholders]);
+
+  return (
+    <textarea
+      name={name}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      placeholder={placeholders[index]}
+      rows={4}
+      style={{ transition: "placeholder 0.3s ease" }}
+    />
+  );
+}
+
+function CustomSelect({ name, value, onChange, options, placeholder, required }) {
+  const [open, setOpen] = useState(false);
+  
+  const displayValue = value || placeholder;
+  // Exclude the selected value from the dropdown list, matching the CSS behavior
+  const filteredOptions = options.filter(opt => opt !== displayValue);
+
+  return (
+    <div 
+      className={`relative w-full mt-3 ${open ? 'z-[100]' : 'z-10'}`} 
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      style={{ color: "var(--text)", fontFamily: "var(--font-sans)", cursor: "pointer" }}
+    >
+      <input type="hidden" name={name} value={value} required={required} />
+      
+      {/* Selected Box */}
+      <div
+        className="relative z-50 flex items-center justify-between transition-colors duration-300"
+        style={{
+          backgroundColor: "var(--dropdown-bg)",
+          padding: "10px 12px",
+          marginBottom: "3px",
+          borderRadius: "5px",
+          fontSize: "15px",
+          fontWeight: 400,
+          textTransform: "none",
+          letterSpacing: "normal"
+        }}
+        onClick={() => setOpen(!open)}
+      >
+        <span>{displayValue}</span>
+        
+        {/* Arrow SVG from the provided snippet */}
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 512 512" 
+          className="transition-transform duration-300"
+          style={{
+            height: "12px",
+            width: "25px",
+            fill: "var(--text)",
+            transform: open ? "rotate(0deg)" : "rotate(-90deg)"
+          }}
+        >
+          <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
+        </svg>
+      </div>
+
+      {/* Options Dropdown */}
+      <div className="absolute left-0 right-0 z-40 overflow-hidden">
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ y: "-100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              style={{
+                backgroundColor: "var(--dropdown-bg)",
+                padding: "5px",
+                borderRadius: "5px",
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
+              <div className="max-h-[250px] overflow-y-auto custom-scrollbar flex flex-col">
+                {filteredOptions.map((opt) => (
+                  <div
+                    key={opt}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onChange(opt);
+                      setOpen(false);
+                    }}
+                    className="transition-colors duration-300"
+                    style={{
+                      padding: "8px 10px",
+                      borderRadius: "5px",
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      backgroundColor: "transparent",
+                      textTransform: "none",
+                      letterSpacing: "normal"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--dropdown-hover)"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                  >
+                    {opt}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

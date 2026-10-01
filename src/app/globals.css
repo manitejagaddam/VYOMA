@@ -110,6 +110,8 @@ html {
   --shadow:         0 24px 60px rgba(0,0,0,0.6);
   --shadow-sm:      0 4px 16px rgba(0,0,0,0.3);
   --topbar-bg:      rgba(10,11,15,0.88);
+  --dropdown-bg:    #2a2f3b;
+  --dropdown-hover: #323741;
   --radius:         4px;
   --radius-lg:      8px;
   --nav-h:          80px;
@@ -128,9 +130,10 @@ html {
   --surface-2:      rgba(255,255,255,0.40);
   --surface-3:      rgba(200,215,255,0.25);
 
-  /* ── Borders — thin blue-tinted glass edges ── */
   --border:         rgba(120,160,255,0.18);
   --border-strong:  rgba(80,130,255,0.32);
+  --dropdown-bg:    #e5e7eb; /* Silver / slate-200 */
+  --dropdown-hover: #d1d5db; /* Gray-300 */
 
   /* Custom Cursor Gradient (Light Theme: Logo Shades) */
   --cursor-stop-1: #FFDF00;
