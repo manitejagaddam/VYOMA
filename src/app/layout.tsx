@@ -12,6 +12,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { CookieConsent } from "@/components/shared/CookieConsent";
 
+
 // Next.js font subsetting - auto preloads and eliminates render-blocking
 const inter = Inter({
   subsets: ["latin"],
