@@ -35,7 +35,7 @@ export const CardContainer = ({
     containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
   };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
   const handleMouseEnter = () => {
     setIsMouseEntered(true);
     if (!containerRef.current) return;

@@ -31,7 +31,7 @@ export function useSupabaseQuery(table, options = {}) {
     if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(cached.data);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setLoading(false);
       return;
     }

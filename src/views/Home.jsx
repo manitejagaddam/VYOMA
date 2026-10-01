@@ -2,7 +2,7 @@
 /** pages/Home.jsx */
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
@@ -17,7 +17,7 @@ import { FlipWords } from "@/components/ui/flip-words";
 import { EncryptedText } from "@/components/ui/encrypted-text";
 import { Spotlight } from "@/components/ui/spotlight";
 import { FinalCTA } from "@/components/shared/FinalCTA";
-import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
+import { Carousel } from "@/components/ui/apple-cards-carousel";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 
 function HeroSection({}) {
@@ -119,7 +119,7 @@ function CapabilitySnapshot() {
 }
 
 function SelectedWork({ projects = [] }) {
-  const router = useRouter();
+
   const selected = projects.slice(0, 4);
 
   const carouselItems = selected.map((p, index) => {
@@ -131,15 +131,15 @@ function SelectedWork({ projects = [] }) {
     } catch {
       roles = [p.role];
     }
-    const roleStr = roles.filter(Boolean).join(" · ");
+    roles = roles.filter(Boolean);
 
     return (
-      <div className="w-80 md:w-96 flex-shrink-0 h-[40rem]" key={p.slug}>
+      <div className="w-[90vw] sm:w-[22rem] md:w-96 lg:w-[28rem] flex-shrink-0 h-[42rem] md:h-[44rem]" key={p.slug}>
         <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
           <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
           
-          <div className="relative z-10 flex flex-col h-full">
-            <div className="w-full mb-4">
+          <div className="relative z-10 flex flex-col h-full overflow-hidden">
+            <div className="w-full mb-4 shrink-0">
               {displayImg ? (
                 <div className="relative h-40 w-full rounded-xl shadow-lg overflow-hidden mb-4">
                   <Image src={displayImg} alt={p.title} fill sizes="(max-width: 768px) 320px, 384px" priority={index < 2} className="object-cover" />
@@ -148,22 +148,36 @@ function SelectedWork({ projects = [] }) {
                 <div className="h-40 w-full bg-neutral-200 dark:bg-neutral-800/50 rounded-xl mb-4"></div>
               )}
             </div>
-            <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-2">
+            <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-6 shrink-0">
               {p.title}
             </h3>
             
             {/* Metadata Grid */}
-            <div className="grid grid-cols-2 gap-x-4 gap-y-4 mt-2 text-xs font-mono flex-grow overflow-y-auto pr-2 custom-scrollbar">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4 mt-2 text-xs font-mono flex-grow overflow-y-auto min-h-0 pr-2 custom-scrollbar pt-2 border-t border-white/5">
               {(p.client || p.category) && (
                 <div>
                   <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Client</span>
                   <span className="text-neutral-600 dark:text-neutral-300 line-clamp-2">{p.client || p.category}</span>
                 </div>
               )}
-              {roleStr && (
+              {roles.length > 0 && (
                 <div>
                   <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Role</span>
-                  <span className="text-neutral-600 dark:text-neutral-300 line-clamp-3">{roleStr}</span>
+                  <ul className="text-neutral-600 dark:text-neutral-300 space-y-1">
+                    {roles.slice(0, 2).map((r, i) => (
+                      <li key={i} className="flex items-start">
+                        <span className="mr-1.5 opacity-50">•</span>
+                        <span className="leading-tight">
+                          {r}
+                          {i === 1 && roles.length > 2 && (
+                            <span className="ml-1.5 text-[var(--accent)] font-medium opacity-90 whitespace-nowrap">
+                              +{roles.length - 2}
+                            </span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
               {p.timeline && (
@@ -211,7 +225,7 @@ function WhatWeBuild({ services = [] }) {
   const sortedServices = [...services].sort((a, b) => a.no - b.no);
 
   const carouselItems = sortedServices.map(b => (
-    <div className="w-80 md:w-96 flex-shrink-0 h-[40rem]" key={b.slug}>
+    <div className="w-[90vw] sm:w-[22rem] md:w-96 lg:w-[28rem] flex-shrink-0 h-[40rem]" key={b.slug}>
       <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
         <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
         

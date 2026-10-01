@@ -151,7 +151,7 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
     >
       {text.split("").map((char, index) => {
         const isRevealed = index < revealCount;
-        // eslint-disable-next-line react-hooks/refs
+         
         const displayChar = isRevealed
           ? char
           : char === " "

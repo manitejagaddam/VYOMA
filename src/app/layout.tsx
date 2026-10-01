@@ -30,8 +30,15 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
+const getBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "https://www.vyoma.world";
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vyoma.world"),
+  metadataBase: new URL(getBaseUrl()),
   title: {
     default: "VYOMA — Custom Software, AI & Product Design Agency",
     template: "%s — VYOMA",
@@ -50,12 +57,12 @@ export const metadata: Metadata = {
   authors: [{ name: "VYOMA Technologies" }],
   creator: "VYOMA Technologies",
   alternates: {
-    canonical: "https://vyoma.world",
+    canonical: "https://www.vyoma.world",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://vyoma.world",
+    url: "https://www.vyoma.world",
     siteName: "VYOMA",
     title: "VYOMA — Custom Software, AI & Product Design Agency",
     description:
@@ -147,7 +154,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           <a
             href="#main-content"
