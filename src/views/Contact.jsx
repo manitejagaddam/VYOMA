@@ -2,13 +2,11 @@
 /** pages/Contact.jsx — Sends inquiry to Supabase `leads` table.
  *  Supports ?service= query param for dynamic pre-fill from service/solution pages.
  */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { submitContactForm } from "@/app/actions";
 import { motion, AnimatePresence } from "motion/react";
-import { IconChevronDown, IconCheck } from "@tabler/icons-react";
-import { useOutsideClick } from "@/hooks/use-outside-click";
 // Maps URL ?service= slug → { label, need, description, placeholders }
 const SERVICE_CONTEXT = {
   "web-development": {
@@ -321,10 +319,6 @@ export function Contact() {
 function AnimatedTextarea({ placeholders, initialValue, name }) {
   const [index, setIndex] = useState(0);
   const [value, setValue] = useState(initialValue || "");
-
-  useEffect(() => {
-    setValue(initialValue || "");
-  }, [initialValue]);
 
   useEffect(() => {
     const interval = setInterval(() => {
