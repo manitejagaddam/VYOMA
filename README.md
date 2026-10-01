@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="public/assets/Logo.webp" alt="VYOMA Logo" width="200" />
+  
+  <h1>VYOMA</h1>
+  <p><b>Custom Software, AI & Product Design Agency</b></p>
+  
+  <p>
+    <a href="https://vyoma.world">vyoma.world</a> • 
+    <a href="mailto:support@vyoma.world">support@vyoma.world</a>
+  </p>
+</div>
 
-## Getting Started
+<br />
 
-First, run the development server:
+## About Us
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+VYOMA is a technology agency built for ambitious startups and businesses. We combine **design, engineering, and artificial intelligence** into one connected team to build scalable web apps, mobile products, and intelligent systems. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+We believe in **evidence before promises.** We don't just write code; we design products that solve real problems for real users.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What We Do
 
-## Learn More
+### ✦ Product Design (UI/UX)
+We design intuitive, high-converting interfaces that users love. From wireframes and prototyping to complete design systems.
 
-To learn more about Next.js, take a look at the following resources:
+### ✦ Custom Software Engineering
+Full-stack development for scalable web applications and mobile apps. We specialize in modern tech stacks like Next.js, React, Node, and cloud infrastructure.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### ✦ AI Engineering & Intelligence
+Integrating intelligent solutions into modern workflows—from custom LLM integrations and automated agents to smart analytics.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Selected Work
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A few of the problems we've solved recently:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Menuly**: A fully-featured QR Digital Menu SaaS platform used by restaurants & hotels.
+- **Verik QR**: A universal QR campaign manager with dynamic routing.
+- **AEI AFPS**: An enterprise-grade, DGMS-approved fire detection & suppression platform.
+- **WoyTrip**: A budget-friendly, high-performance tour package booking engine.
+
+*[View all of our case studies here](https://vyoma.world/work).*
+
+---
+
+## Contact
+
+Have a project in mind? We'd love to discuss how we can help bring it to life.
+
+- 🌐 **Website:** [vyoma.world](https://vyoma.world)
+- ✉️ **Email:** [support@vyoma.world](mailto:support@vyoma.world)
