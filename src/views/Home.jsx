@@ -122,27 +122,74 @@ function SelectedWork({ projects = [] }) {
   const router = useRouter();
   const selected = projects.slice(0, 4);
 
-  const carouselCards = selected.map((p, index) => (
-    <Card 
-      key={p.slug} 
-      index={index}
-      card={{
-        src: p.image_url || "/assets/placeholder.jpg",
-        category: p.client,
-        title: p.title,
-        content: (
-          <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4">
-            <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl font-sans max-w-3xl mx-auto mb-8">
-              {p.excerpt || `Exploring the technical and design journey of ${p.title}.`}
-            </p>
-            <div className="flex justify-center">
-              <Btn onClick={() => { document.body.style.overflow = "auto"; router.push(`/work/${p.slug}`); }} variant="primary">Read Case Study</Btn>
+  const carouselItems = selected.map((p, index) => {
+    const displayImg = p.image_url || p._localImage || "/assets/placeholder.jpg";
+    let roles = [];
+    try {
+      const parsed = typeof p.role === "string" ? JSON.parse(p.role) : p.role;
+      roles = Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      roles = [p.role];
+    }
+    const roleStr = roles.filter(Boolean).join(" · ");
+
+    return (
+      <div className="w-80 md:w-96 flex-shrink-0 h-[40rem]" key={p.slug}>
+        <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
+          <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
+          
+          <div className="relative z-10 flex flex-col h-full">
+            <div className="w-full mb-4">
+              {displayImg ? (
+                <div className="relative h-40 w-full rounded-xl shadow-lg overflow-hidden mb-4">
+                  <Image src={displayImg} alt={p.title} fill sizes="(max-width: 768px) 320px, 384px" priority={index < 2} className="object-cover" />
+                </div>
+              ) : (
+                <div className="h-40 w-full bg-neutral-200 dark:bg-neutral-800/50 rounded-xl mb-4"></div>
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-2">
+              {p.title}
+            </h3>
+            
+            {/* Metadata Grid */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4 mt-2 text-xs font-mono flex-grow overflow-y-auto pr-2 custom-scrollbar">
+              {(p.client || p.category) && (
+                <div>
+                  <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Client</span>
+                  <span className="text-neutral-600 dark:text-neutral-300 line-clamp-2">{p.client || p.category}</span>
+                </div>
+              )}
+              {roleStr && (
+                <div>
+                  <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Role</span>
+                  <span className="text-neutral-600 dark:text-neutral-300 line-clamp-3">{roleStr}</span>
+                </div>
+              )}
+              {p.timeline && (
+                <div>
+                  <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Timeline</span>
+                  <span className="text-neutral-600 dark:text-neutral-300">{p.timeline}</span>
+                </div>
+              )}
+              {p.year && (
+                <div>
+                  <span className="text-[var(--accent)] font-bold block mb-1 opacity-80 text-[10px] uppercase tracking-wider">Year</span>
+                  <span className="text-neutral-600 dark:text-neutral-300">{p.year}</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-black/5 dark:border-white/5">
+              <Btn to={`/work/${p.slug}`} variant="cta" aria-label={`Read Case Study for ${p.title}`}>
+                Read Case Study
+              </Btn>
             </div>
           </div>
-        )
-      }} 
-    />
-  ));
+        </div>
+      </div>
+    );
+  });
 
   return (
     <section className="section selected-work has-bg-grid overflow-hidden">
@@ -154,7 +201,7 @@ function SelectedWork({ projects = [] }) {
         </div>
       </div>
       <div className="w-full h-full pb-10">
-        <Carousel items={carouselCards} />
+        <Carousel items={carouselItems} />
       </div>
     </section>
   );
