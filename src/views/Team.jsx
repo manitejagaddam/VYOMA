@@ -8,10 +8,47 @@ const productDesign = "/assets/vyoma-product-design.webp";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { FinalCTA } from "@/components/shared/FinalCTA";
 
-const GROUPS = ["Leadership", "Design", "Engineering", "AI & ML", "Quality & Delivery"];
+const ORDERED_CATEGORIES = [
+  "Founding Member", 
+  "Leadership", 
+  "AI", 
+  "SaaS", 
+  "App Development", 
+  "Web Development", 
+  "Design", 
+  "Engineering", 
+  "Quality & Delivery"
+];
+
+function parseCategory(val) {
+  if (!val) return [];
+  try {
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : [val];
+  } catch {
+    return [val];
+  }
+}
 
 export function Team({ initialMembers = [] }) {
   const team = initialMembers;
+
+  const rawCategoriesSet = new Set();
+  team.forEach(m => {
+    const cats = m.category ? parseCategory(m.category) : [m.group || "Founding Member"];
+    cats.filter(Boolean).forEach(c => rawCategoriesSet.add(c));
+  });
+  const rawCategories = [...rawCategoriesSet];
+  
+  // Sort categories so that Founding Member and other predefined ones appear in a logical order
+  const GROUPS = rawCategories.sort((a, b) => {
+    const indexA = ORDERED_CATEGORIES.findIndex(cat => cat.toLowerCase() === a.toLowerCase());
+    const indexB = ORDERED_CATEGORIES.findIndex(cat => cat.toLowerCase() === b.toLowerCase());
+    if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    return indexA - indexB;
+  });
 
   return (
     <>
@@ -37,7 +74,10 @@ export function Team({ initialMembers = [] }) {
       </div>
 
       {GROUPS.map(group => {
-          const members = team.filter(m => (m.group || "Leadership") === group);
+          const members = team.filter(m => {
+            const cats = m.category ? parseCategory(m.category) : [m.group || "Founding Member"];
+            return cats.some(c => c.toLowerCase() === group.toLowerCase());
+          });
           if (!members.length) return null;
           return (
             <section key={group} className="section team-group">

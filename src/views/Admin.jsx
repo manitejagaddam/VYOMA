@@ -90,7 +90,9 @@ const SCHEMAS = {
   ],
   team: [
     { key: "name",          label: "Name",          type: "text", placeholder: "e.g., Sarah Chen" },
+    { key: "email",         label: "Email",         type: "text", placeholder: "e.g., sarah@vyomatechnologies.com" },
     { key: "role",          label: "Role",          type: "text", placeholder: "e.g., Head of Engineering" },
+    { key: "category",      label: "Category",      type: "combobox", placeholder: "Select a category", options: ["Founding Member", "Leadership", "AI", "SaaS", "App Development", "Web Development", "Design", "Engineering", "Quality & Delivery"] },
     { key: "specialization",label: "Specialization",type: "text", placeholder: "e.g., Cloud Architecture, AI" },
     { key: "order_index",   label: "Order",         type: "number", placeholder: "e.g., 10" },
     { key: "image_url",     label: "Avatar Image",  type: "image" },
