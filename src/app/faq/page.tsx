@@ -4,5 +4,5 @@ import { getFaqs } from "@/lib/data";
 export const metadata: Metadata = { title: "FAQ", description: "Answers to common questions about working with VYOMA." };
 export default async function FAQPage() { 
   const faqs = await getFaqs();
-  return <FAQ initialFaqs={faqs as any} />; 
+  return <FAQ initialFaqs={faqs as Record<string, unknown>[]} />; 
 }

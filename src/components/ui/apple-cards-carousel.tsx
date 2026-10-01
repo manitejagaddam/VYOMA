@@ -160,15 +160,15 @@ const BackgroundImagePreloader = ({ items }: { items: unknown[] }) => {
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
-    // Fetch all remaining images silently 1.5s after page mounts
-    // so we do not block the initial page render
-    setMounted(true);
+    // Delay preloading slightly to avoid blocking initial render
+    const t = setTimeout(() => setMounted(true), 100);
+    return () => clearTimeout(t);
   }, []);
 
   if (!mounted) return null;
 
   const imagesToPreload = items
-    .map((item) => (item as any)?.props?.card?.src)
+    .map((item) => (item as { props?: { card?: { src?: string } } })?.props?.card?.src)
     .filter(Boolean);
 
   return (

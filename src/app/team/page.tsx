@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 export default async function TeamPage() {
   const members = await getTeamMembers();
-  return <Team initialMembers={members as any} />;
+  return <Team initialMembers={members as Record<string, unknown>[]} />;
 }

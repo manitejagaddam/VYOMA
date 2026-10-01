@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 export default async function SolutionsPage() {
   const solutions = await getSolutions();
-  return <Solutions initialSolutions={solutions as any} />;
+  return <Solutions initialSolutions={solutions as Record<string, unknown>[]} />;
 }

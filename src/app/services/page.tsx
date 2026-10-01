@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 export default async function ServicesPage() {
   const services = await getServices();
-  return <Services initialServices={services as any} />;
+  return <Services initialServices={services as Record<string, unknown>[]} />;
 }
