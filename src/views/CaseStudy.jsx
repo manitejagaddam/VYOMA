@@ -1,9 +1,34 @@
 "use client";
 /** pages/CaseStudy.jsx — Uses exact DB column names */
+import Image from "next/image";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { NotFound } from "./NotFound";
 
+/** Converts the markdown stored in DB to safe HTML for display */
+function mdToHtml(md) {
+  if (!md) return "";
+  return md
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .split(/\n{2,}/)
+    .map(block => {
+      const lines = block.split("\n");
+      if (lines.every(l => l.match(/^- /)))
+        return "<ul>" + lines.map(l => `<li>${l.slice(2)}</li>`).join("") + "</ul>";
+      if (lines.every(l => l.match(/^\d+\. /)))
+        return "<ol>" + lines.map(l => `<li>${l.replace(/^\d+\. /, "")}</li>`).join("") + "</ol>";
+      if (block.startsWith("<h")) return block;
+      return block ? `<p>${block}</p>` : "";
+    }).join("");
+}
+
+function RichBlock({ text }) {
+  return <div className="case-rich" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />;
+}
 export function CaseStudy({ project }) {
   if (!project) return <NotFound />;
 
@@ -20,7 +45,7 @@ export function CaseStudy({ project }) {
           <p className="case-hero-sub">{project.overview}</p>
           <div className="case-hero-meta">
             <div><span>Client</span><strong>{project.client}</strong></div>
-            <div><span>Role</span><strong>{project.role}</strong></div>
+            <div><span>Role</span><strong>{(()=>{ try{ const p=typeof project.role==="string"?JSON.parse(project.role):project.role; return Array.isArray(p)?p.join(" · "):project.role; }catch{return project.role;} })()}</strong></div>
             <div><span>Timeline</span><strong>{project.timeline}</strong></div>
             <div><span>Year</span><strong>{project.year}</strong></div>
           </div>
@@ -38,18 +63,22 @@ export function CaseStudy({ project }) {
             </div>
           )}
         </div>
-        {heroImage && <figure><img src={heroImage} alt={project.title} /></figure>}
+        {heroImage && (
+          <figure className="relative w-full min-h-[280px] md:min-h-[420px] rounded-xl overflow-hidden">
+            <Image src={heroImage} alt={project.title} fill priority sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+          </figure>
+        )}
       </section>
 
       {/* Body */}
       <section className="section case-body">
         <div className="case-columns">
           <div className="case-left">
-            {[["The Challenge", project.challenge], ["The Solution", project.solution], ["The Impact", project.impact]].map(
+            {[["The Overview", project.overview], ["The Challenge", project.challenge], ["The Solution", project.solution], ["The Impact", project.impact]].map(
               ([label, text]) => text && (
                 <div key={label} className="case-block">
                   <span>{label}</span>
-                  <p>{text}</p>
+                  <RichBlock text={text} />
                 </div>
               )
             )}
@@ -73,8 +102,8 @@ export function CaseStudy({ project }) {
           <SectionKicker left="Gallery" right="Visuals" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px", marginTop: "40px" }}>
             {project.gallery_urls.map((url, i) => (
-              <figure key={i} style={{ margin: 0, borderRadius: "12px", overflow: "hidden", background: "var(--surface-2)", border: "1px solid var(--border)" }}>
-                <img src={url} alt={`${project.title} screenshot ${i + 1}`} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
+              <figure key={i} className="relative min-h-[240px] rounded-xl overflow-hidden" style={{ margin: 0, background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+                <Image src={url} alt={`${project.title} screenshot ${i + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </figure>
             ))}
           </div>
@@ -101,10 +130,11 @@ export function CaseStudy({ project }) {
       {/* CTA */}
       <section className="section case-cta">
         <h2>Need something similar?</h2>
-        <p>Tell VYOMA about your project. We'll respond with the right questions, not a sales script.</p>
+        <p>Tell VYOMA about your project. We&apos;ll respond with the right questions, not a sales script.</p>
         <Btn to="/contact" variant="primary">Talk to VYOMA</Btn>
       </section>
     </>
   );
 }
+
 

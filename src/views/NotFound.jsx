@@ -7,7 +7,7 @@ export function NotFound({}) {
     <section className="not-found">
       <p className="eyebrow">404</p>
       <h1>That page moved.</h1>
-      <p>The route does not exist. Let's get you back on track.</p>
+      <p>The route does not exist. Let&apos;s get you back on track.</p>
       <Link to="/" className="text-link">← Back to home</Link>
     </section>
   );

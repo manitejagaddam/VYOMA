@@ -42,10 +42,11 @@ export function PlaceholdersAndVanishInput({
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placeholders]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const newDataRef = useRef<any[]>([]);
+  const newDataRef = useRef<{ x: number; y: number; r: number; color: string }[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const [animating, setAnimating] = useState(false);
@@ -69,12 +70,12 @@ export function PlaceholdersAndVanishInput({
 
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
-    const newData: any[] = [];
+    const newData: { x: number; y: number; color: number[] }[] = [];
 
     for (let t = 0; t < 800; t++) {
-      let i = 4 * t * 800;
+      const i = 4 * t * 800;
       for (let n = 0; n < 800; n++) {
-        let e = i + 4 * n;
+        const e = i + 4 * n;
         if (
           pixelData[e] !== 0 &&
           pixelData[e + 1] !== 0 &&
@@ -109,7 +110,7 @@ export function PlaceholdersAndVanishInput({
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
       requestAnimationFrame(() => {
-        const newArr: any[] = [];
+        const newArr: { x: number; y: number; r: number; color: string }[] = [];
         for (let i = 0; i < newDataRef.current.length; i++) {
           const current = newDataRef.current[i];
           if (current.x < pos) {
@@ -170,7 +171,9 @@ export function PlaceholdersAndVanishInput({
     if (e.key === "Enter" && !animating) {
       e.preventDefault();
       vanishAndSubmit();
-      onSubmit && onSubmit(e as any);
+      if (onSubmit) {
+        onSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+      }
     }
   };
   return (
@@ -208,7 +211,13 @@ export function PlaceholdersAndVanishInput({
 
       <button
         disabled={!value}
-        type="button" onClick={(e) => { e.preventDefault(); vanishAndSubmit(); onSubmit && onSubmit(e as any); }}
+        type="button" onClick={(e) => { 
+          e.preventDefault(); 
+          vanishAndSubmit(); 
+          if (onSubmit) {
+            onSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+          }
+        }}
         className="absolute right-2 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full disabled:bg-gray-100 bg-black dark:bg-zinc-900 dark:disabled:bg-zinc-800 transition duration-200 flex items-center justify-center"
       >
         <motion.svg

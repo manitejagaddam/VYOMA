@@ -4,24 +4,24 @@
  * stay identical whether data comes from the DB or here.
  */
 
-const heroIntelligence = "/assets/hero-intelligence.png";
-const workResearch = "/assets/work-research.png";
-const workAutomation = "/assets/work-automation.png";
-const agencySystem = "/assets/vyoma-agency-system.png";
-const productDesign = "/assets/vyoma-product-design.png";
-const engineeringSystem = "/assets/vyoma-engineering.png";
-const intelligenceSystem = "/assets/vyoma-intelligence.png";
-const featurePipeline = "/assets/feature-pipeline.png";
-const featureMobile = "/assets/feature-mobile.png";
-const featureAi = "/assets/feature-ai.png";
-const featureCloud = "/assets/feature-cloud.png";
-const featureAutomation = "/assets/feature-automation.png";
-const featureMobileUi = "/assets/feature-mobile-ui.png";
-const featureCloudArch = "/assets/feature-cloud-arch.png";
-const featureAnalytics = "/assets/feature-analytics.png";
-const featureProductDesign = "/assets/feature-product-design.png";
-const featureGlobal = "/assets/feature-global.png";
-const featureAiPipeline = "/assets/feature-ai-pipeline.png";
+const heroIntelligence = "/assets/hero-intelligence.webp";
+const workResearch = "/assets/work-research.webp";
+const workAutomation = "/assets/work-automation.webp";
+const agencySystem = "/assets/vyoma-agency-system.webp";
+const productDesign = "/assets/vyoma-product-design.webp";
+const engineeringSystem = "/assets/vyoma-engineering.webp";
+const intelligenceSystem = "/assets/vyoma-intelligence.webp";
+const featurePipeline = "/assets/feature-pipeline.webp";
+const featureMobile = "/assets/feature-mobile.webp";
+const featureAi = "/assets/feature-ai.webp";
+const featureCloud = "/assets/feature-cloud.webp";
+const featureAutomation = "/assets/feature-automation.webp";
+const featureMobileUi = "/assets/feature-mobile-ui.webp";
+const featureCloudArch = "/assets/feature-cloud-arch.webp";
+const featureAnalytics = "/assets/feature-analytics.webp";
+const featureProductDesign = "/assets/feature-product-design.webp";
+const featureGlobal = "/assets/feature-global.webp";
+const featureAiPipeline = "/assets/feature-ai-pipeline.webp";
 
 /* ── Projects ───────────────────────────────────── */
 export const FALLBACK_PROJECTS = [

@@ -5,17 +5,18 @@
  *   right = image bleeding edge-to-edge, no box
  * Service Detail: uses PageHero for the 50/50 top, then detail content below.
  */
+import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
-import { STAGES } from "@/lib/fallback";
 import { NotFound } from "./NotFound";
-const workAutomation = "/assets/work-automation.png";
+const workAutomation = "/assets/work-automation.webp";
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { FinalCTA } from "@/components/shared/FinalCTA";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
+
 
 export function Services(props) {
   const { data: services, loading } = useSupabaseQuery(
@@ -63,8 +64,8 @@ export function Services(props) {
               </div>
 
               {/* Image half — no box, no border, image fills the column */}
-              <div className="svc-split-img">
-                {img && <img src={img} alt={svc.title} loading="lazy" />}
+              <div className="svc-split-img relative min-h-[300px] overflow-hidden">
+                {img && <Image src={img} alt={svc.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />}
               </div>
             </article>
           );
@@ -73,7 +74,7 @@ export function Services(props) {
 
       <section className="section centered-cta">
         <h2>Not sure which service fits your project?</h2>
-        <p>Start with a discovery call. We'll help you figure out the right scope and approach.</p>
+        <p>Start with a discovery call. We&apos;ll help you figure out the right scope and approach.</p>
         <Btn to="/contact" variant="primary">Book a Discovery Call</Btn>
       </section>
     </>

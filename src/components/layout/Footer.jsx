@@ -2,8 +2,9 @@
 /** components/layout/Footer.jsx */
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { FloatingContactDock } from "../shared/FloatingContactDock";
-const logo = "/assets/Logo.png";
+const logo = "/assets/Logo.webp";
 
 export function Footer() {
   const pathname = usePathname();
@@ -12,7 +13,14 @@ export function Footer() {
   return (
     <footer className="site-footer has-bg-grid">
       <div className="footer-brand">
-        <img src={logo} alt="VYOMA" className="dark:invert" style={{ height: "72px", width: "auto", marginBottom: "8px" }} />
+        <Image
+          src={logo}
+          alt="VYOMA logo"
+          className="dark:invert"
+          style={{ height: "72px", width: "auto", marginBottom: "8px" }}
+          width={72}
+          height={72}
+        />
         <p>Designing and building digital products, software and intelligent systems.</p>
         <FloatingContactDock />
       </div>
@@ -57,14 +65,13 @@ export function Footer() {
 
       <div className="footer-col">
         <span>Legal</span>
+        <Link href="/terms">Terms of Service</Link>
         <Link href="/privacy">Privacy Policy</Link>
-        <Link href="/terms">Terms</Link>
         <div className="footer-bottom-info">
-          <p>© 2025 VYOMA Technologies</p>
-          <p>hello@vyoma.studio</p>
+          <p>© {new Date().getFullYear()} VYOMA Technologies</p>
+          <a href="mailto:support@vyoma.world" className="hover:underline">support@vyoma.world</a>
         </div>
       </div>
     </footer>
   );
 }
-

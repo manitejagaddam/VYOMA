@@ -3,6 +3,7 @@
  * Clean 50/50 split hero — text left, image right, no box around image.
  * The right half is the image, bleeding to the edges of its column.
  */
+import Image from "next/image";
 import { Spotlight } from "../ui/spotlight";
 
 export function PageHero({ eyebrow, title, copy, actions, image, imageAlt = "VYOMA visual", children }) {
@@ -19,9 +20,18 @@ export function PageHero({ eyebrow, title, copy, actions, image, imageAlt = "VYO
         </div>
       </div>
       <figure className="page-hero-fig">
-        {image && <img src={image} alt={imageAlt} loading="eager" fetchPriority="high" decoding="async" />}
+        {image && (
+          <Image
+            src={image}
+            alt={imageAlt}
+            width={1200}
+            height={800}
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+          />
+        )}
       </figure>
     </section>
   );
 }
-

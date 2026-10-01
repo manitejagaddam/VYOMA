@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "motion/react";
-
-
+import Image from "next/image";
 
 const transition = {
   type: "spring" as const,
@@ -93,12 +92,12 @@ export const ProductItem = ({
 }) => {
   return (
     <a href={href} className="flex space-x-2">
-      <img
+      <Image
         src={src}
         width={140}
         height={70}
         alt={title}
-        className="shrink-0 rounded-md shadow-2xl"
+        className="shrink-0 rounded-md shadow-2xl object-cover"
       />
       <div>
         <h4 className="text-xl font-bold mb-1 text-black dark:text-white">

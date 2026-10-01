@@ -2,7 +2,7 @@
 /** pages/Engagements.jsx */
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
-const engineeringSystem = "/assets/vyoma-engineering.png";
+const engineeringSystem = "/assets/vyoma-engineering.webp";
 
 const MODELS = [
   { no: "01", title: "Fixed Project",             desc: "For clearly defined projects with a meaningful, bounded outcome. Scope, timeline, and cost agreed before work begins.", best: "Well-defined websites, apps, integrations, specific features." },
@@ -35,7 +35,7 @@ export function Engagements({}) {
         ))}
       </section>
       <section className="section centered-cta">
-        <h2>Start with the shape of the problem. We'll find the right way to work together.</h2>
+        <h2>Start with the shape of the problem. We&apos;ll find the right way to work together.</h2>
         <Btn to="/contact" variant="primary">Start a Project</Btn>
       </section>
     </>

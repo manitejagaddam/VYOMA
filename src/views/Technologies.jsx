@@ -3,7 +3,7 @@
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { TECHNOLOGIES } from "@/lib/fallback";
-const engineeringSystem = "/assets/vyoma-engineering.png";
+const engineeringSystem = "/assets/vyoma-engineering.webp";
 
 export function Technologies({}) {
   return (

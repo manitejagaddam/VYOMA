@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, {
   useEffect,
   useRef,
@@ -41,13 +42,6 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
   const [canScrollRight, setCanScrollRight] = React.useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollLeft = initialScroll;
-      checkScrollability();
-    }
-  }, [initialScroll]);
-
   const checkScrollability = () => {
     if (carouselRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
@@ -55,6 +49,14 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
     }
   };
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollLeft = initialScroll;
+      checkScrollability();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialScroll]);
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -135,6 +137,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
             className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
             onClick={scrollLeft}
             disabled={!canScrollLeft}
+            aria-label="Scroll left"
           >
             <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
           </button>
@@ -142,6 +145,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
             className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
             onClick={scrollRight}
             disabled={!canScrollRight}
+            aria-label="Scroll right"
           >
             <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
           </button>
@@ -164,6 +168,15 @@ export const Card = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { onCardClose, currentIndex } = useContext(CarouselContext);
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    onCardClose(index);
+  };
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -179,18 +192,10 @@ export const Card = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useOutsideClick(containerRef as React.RefObject<HTMLDivElement>, () => handleClose());
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
 
   return (
     <>
@@ -214,6 +219,7 @@ export const Card = ({
               <button
                 className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
                 onClick={handleClose}
+                aria-label="Close"
               >
                 <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
               </button>
@@ -274,7 +280,7 @@ export const BlurImage = ({
 }: React.ImgHTMLAttributes<HTMLImageElement>) => {
   const [isLoading, setLoading] = useState(true);
   return (
-    <img
+    <Image
       className={cn(
         "h-full w-full transition duration-300",
         isLoading ? "blur-sm" : "blur-0",

@@ -9,7 +9,7 @@ export function FinalCTA({ go }) {
       <div className="final-cta-inner relative z-10">
         <p className="eyebrow">Ready to build?</p>
         <h2>Start your project with VYOMA.</h2>
-        <p>Tell us what you're building. We'll bring the right people, process, and technology to make it real.</p>
+        <p>Tell us what you&apos;re building. We&apos;ll bring the right people, process, and technology to make it real.</p>
         <div className="final-cta-actions">
           <Btn to="/contact" go={go} variant="cta">Start a Project</Btn>
           <Btn to="/contact" go={go} variant="outline-light">Book a Discovery Call</Btn>

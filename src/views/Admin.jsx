@@ -1,10 +1,11 @@
 "use client";
+import Image from "next/image";
 /**
  * Admin.jsx — VYOMA CMS Dashboard
  * Professional DB admin panel with Supabase Auth.
  * All reads/writes go directly to Supabase — no fallback data.
  */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { invalidateCache } from "@/hooks/useData";
 import { useRouter } from "next/navigation";
@@ -16,13 +17,26 @@ const SCHEMAS = {
     { key: "order_index", label: "Order",         type: "number", placeholder: "e.g., 10" },
     { key: "title",       label: "Title",         type: "text", placeholder: "e.g., Enterprise Agent System" },
     { key: "client",      label: "Client",        type: "text", placeholder: "e.g., Acme Corp" },
-    { key: "role",        label: "Role / Category", type: "text", placeholder: "e.g., AI & Backend Engineering" },
+    { key: "role",        label: "Role / Category", type: "combobox", placeholder: "e.g., AI & Backend Engineering", options: [
+      "AI & Backend Engineering",
+      "Full-Stack Product Engineering",
+      "Mobile App Development",
+      "UI/UX & Product Design",
+      "DevOps & Cloud Infrastructure",
+      "Data Engineering & Analytics",
+      "Blockchain & Web3",
+      "E-commerce & Marketplace",
+      "SaaS Platform Development",
+      "API & Integration Engineering",
+      "Enterprise Software",
+      "Automation & Workflow",
+    ] },
     { key: "timeline",    label: "Timeline",      type: "text", placeholder: "e.g., 6 months" },
     { key: "year",        label: "Year",          type: "text", placeholder: "e.g., 2024" },
-    { key: "overview",    label: "Overview",      type: "textarea", placeholder: "Short summary of the project..." },
-    { key: "challenge",   label: "Challenge",     type: "textarea", placeholder: "The problem they faced..." },
-    { key: "solution",    label: "Solution",      type: "textarea", placeholder: "What we built..." },
-    { key: "impact",      label: "Impact",        type: "textarea", placeholder: "The results achieved..." },
+    { key: "overview",    label: "Overview",      type: "richtext", placeholder: "Short summary of the project..." },
+    { key: "challenge",   label: "Challenge",     type: "richtext", placeholder: "The problem they faced..." },
+    { key: "solution",    label: "Solution",      type: "richtext", placeholder: "What we built..." },
+    { key: "impact",      label: "Impact",        type: "richtext", placeholder: "The results achieved..." },
     { key: "tags",        label: "Tags (JSON)",   type: "json", placeholder: '["React", "Node.js", "OpenAI"]' },
     { key: "image_url",   label: "Card Image",    type: "image" },
     { key: "banner_url",  label: "Banner Image",  type: "image" },
@@ -115,7 +129,7 @@ const S = {
   btnEdit: { padding: "6px 12px", background: "rgba(255,255,255,0.06)", color: "#eef0f5", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", cursor: "pointer", fontSize: "12px" },
   btnAccent: { padding: "10px 20px", background: "#b4ff5a", color: "#000", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "14px", fontWeight: 700 },
   // Form
-  drawer: { position: "fixed", right: 0, top: 0, bottom: 0, width: "560px", background: "#111318", borderLeft: "1px solid rgba(255,255,255,0.1)", zIndex: 100, display: "flex", flexDirection: "column", boxShadow: "-24px 0 60px rgba(0,0,0,0.6)" },
+  drawer: { position: "fixed", right: 0, top: 0, bottom: 0, width: "780px", background: "#111318", borderLeft: "1px solid rgba(255,255,255,0.1)", zIndex: 100, display: "flex", flexDirection: "column", boxShadow: "-24px 0 60px rgba(0,0,0,0.6)" },
   drawerHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid rgba(255,255,255,0.07)" },
   drawerBody: { flex: 1, overflowY: "auto", padding: "24px" },
   drawerFooter: { padding: "16px 24px", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", gap: "12px" },
@@ -176,6 +190,176 @@ function LoginScreen({ onLogin }) {
 }
 
 /* ── Field Input ─────────────────────────────────────────────── */
+/* ── Rich Text Editor ───────────────────────────────────────── */
+function RichTextEditor({ value, onChange, placeholder }) {
+  const ref = React.useRef(null);
+  const [tab, setTab] = React.useState("write"); // "write" | "preview"
+
+  // Toolbar action: wrap selection or insert at cursor
+  function insertMarkdown(prefix, suffix = "") {
+    const el = ref.current;
+    if (!el) return;
+    const { selectionStart: s, selectionEnd: e, value: v } = el;
+    const selected = v.slice(s, e);
+    const replacement = prefix + (selected || "text") + suffix;
+    const next = v.slice(0, s) + replacement + v.slice(e);
+    onChange(next);
+    setTimeout(() => { el.focus(); el.setSelectionRange(s + prefix.length, s + prefix.length + (selected || "text").length); }, 0);
+  }
+
+  function insertLinePrefix(prefix) {
+    const el = ref.current;
+    if (!el) return;
+    const { selectionStart: s, value: v } = el;
+    const lineStart = v.lastIndexOf("\n", s - 1) + 1;
+    const next = v.slice(0, lineStart) + prefix + v.slice(lineStart);
+    onChange(next);
+    setTimeout(() => { el.focus(); el.setSelectionRange(s + prefix.length, s + prefix.length); }, 0);
+  }
+
+  // Simple markdown → HTML for preview
+  function mdToHtml(md) {
+    return md
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/^### (.+)$/gm, "<h3 style='margin:12px 0 4px;font-size:14px;color:#eef0f5;font-weight:700'>$1</h3>")
+      .replace(/^## (.+)$/gm, "<h2 style='margin:14px 0 6px;font-size:16px;color:#eef0f5;font-weight:700'>$1</h2>")
+      .split(/\n{2,}/)
+      .map(block => {
+        const lines = block.split("\n");
+        if (lines.every(l => l.match(/^- /))) {
+          return "<ul style='margin:6px 0 6px 20px;color:#c5cbd6'>" + lines.map(l => `<li>${l.slice(2)}</li>`).join("") + "</ul>";
+        }
+        if (lines.every(l => l.match(/^\d+\. /))) {
+          return "<ol style='margin:6px 0 6px 20px;color:#c5cbd6'>" + lines.map(l => `<li>${l.replace(/^\d+\. /, "")}</li>`).join("") + "</ol>";
+        }
+        if (block.startsWith("<h")) return block;
+        return block ? `<p style='margin:0 0 8px;color:#c5cbd6;line-height:1.65'>${block}</p>` : "";
+      }).join("");
+  }
+
+  const btnStyle = { padding: "4px 10px", background: "rgba(255,255,255,0.06)", color: "#c5cbd6", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", cursor: "pointer", fontSize: "12px", fontFamily: "'DM Mono',monospace" };
+  const tabStyle = (active) => ({ padding: "5px 14px", background: active ? "rgba(79,124,255,0.15)" : "transparent", color: active ? "#4f7cff" : "#7a8394", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "12px" });
+
+  return (
+    <div style={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", overflow: "hidden" }}>
+      {/* Top bar */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 10px", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.07)", gap: "6px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "4px" }}>
+          <button type="button" style={btnStyle} title="Bold" onClick={() => insertMarkdown("**", "**")}>B</button>
+          <button type="button" style={{ ...btnStyle, fontStyle: "italic" }} title="Italic" onClick={() => insertMarkdown("*", "*")}>I</button>
+          <button type="button" style={btnStyle} title="Heading" onClick={() => insertLinePrefix("## ")}>H2</button>
+          <button type="button" style={btnStyle} title="Bullet point" onClick={() => insertLinePrefix("- ")}>• List</button>
+          <button type="button" style={btnStyle} title="Numbered list" onClick={() => insertLinePrefix("1. ")}>1. List</button>
+          <button type="button" style={btnStyle} title="New paragraph (blank line)" onClick={() => { const el = ref.current; if (!el) return; const s = el.selectionStart; const v = el.value; const next = v.slice(0, s) + "\n\n" + v.slice(s); onChange(next); setTimeout(() => { el.focus(); el.setSelectionRange(s + 2, s + 2); }, 0); }}>¶</button>
+        </div>
+        <div style={{ display: "flex", gap: "4px" }}>
+          <button type="button" style={tabStyle(tab === "write")} onClick={() => setTab("write")}>Write</button>
+          <button type="button" style={tabStyle(tab === "preview")} onClick={() => setTab("preview")}>Preview</button>
+        </div>
+      </div>
+      {tab === "write" ? (
+        <textarea
+          ref={ref}
+          value={value ?? ""}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder || "Write here. Use **bold**, - bullets, 1. numbered lists, ## headings, or just type paragraphs..."}
+          style={{ width: "100%", minHeight: "200px", padding: "14px", background: "#0a0b0f", border: "none", color: "#eef0f5", fontSize: "14px", fontFamily: "'Inter',sans-serif", resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: "1.7" }}
+        />
+      ) : (
+        <div
+          style={{ minHeight: "200px", padding: "14px", background: "#070809", fontSize: "14px", lineHeight: "1.7" }}
+          dangerouslySetInnerHTML={{ __html: mdToHtml(value ?? "") || "<span style='color:#4a5364;font-style:italic'>Nothing to preview yet…</span>" }}
+        />
+      )}
+      <div style={{ padding: "4px 10px", background: "rgba(255,255,255,0.02)", borderTop: "1px solid rgba(255,255,255,0.05)", fontSize: "10px", color: "#4a5364", fontFamily: "'DM Mono',monospace" }}>
+        Markdown supported · **bold** · *italic* · ## heading · - bullet · 1. numbered
+      </div>
+    </div>
+  );
+}
+
+/* ── Multi-select chip picker ────────────────────────────────── */
+function ComboSelect({ value, onChange, options, placeholder }) {
+  // value is stored as JSON array string e.g. '["AI & Backend","SaaS"]'
+  // or a plain string for backward-compat
+  function parse(v) {
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    try { const p = JSON.parse(v); return Array.isArray(p) ? p : [v]; } catch { return v ? [v] : []; }
+  }
+  const selected = parse(value);
+  const [custom, setCustom] = React.useState("");
+  const [showCustom, setShowCustom] = React.useState(false);
+
+  function toggle(opt) {
+    const next = selected.includes(opt) ? selected.filter(s => s !== opt) : [...selected, opt];
+    onChange(JSON.stringify(next));
+  }
+  function addCustom() {
+    const t = custom.trim();
+    if (!t) return;
+    const next = selected.includes(t) ? selected : [...selected, t];
+    onChange(JSON.stringify(next));
+    setCustom("");
+    setShowCustom(false);
+  }
+  function remove(opt) {
+    onChange(JSON.stringify(selected.filter(s => s !== opt)));
+  }
+
+  const chipActive = { display: "inline-flex", alignItems: "center", gap: "5px", padding: "5px 11px", borderRadius: "4px", fontSize: "12px", cursor: "pointer", border: "1px solid #4f7cff", background: "rgba(79,124,255,0.18)", color: "#a0b4ff", fontWeight: 600 };
+  const chipIdle  = { display: "inline-flex", alignItems: "center", gap: "5px", padding: "5px 11px", borderRadius: "4px", fontSize: "12px", cursor: "pointer", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "#7a8394" };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {/* Selected badges */}
+      {selected.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          {selected.map(s => (
+            <span key={s} style={{ ...chipActive, paddingRight: "6px" }}>
+              {s}
+              <button type="button" onClick={() => remove(s)} style={{ background: "none", border: "none", color: "#a0b4ff", cursor: "pointer", fontSize: "14px", lineHeight: 1, padding: 0, marginLeft: "2px" }}>×</button>
+            </span>
+          ))}
+        </div>
+      )}
+      {/* Preset options grid */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+        {options.map(o => (
+          <button type="button" key={o} onClick={() => toggle(o)} style={selected.includes(o) ? chipActive : chipIdle}>
+            {selected.includes(o) && <span style={{ fontSize: "10px" }}>✓</span>}
+            {o}
+          </button>
+        ))}
+        {/* Custom add */}
+        {showCustom ? (
+          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+            <input
+              autoFocus type="text" value={custom}
+              onChange={e => setCustom(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && addCustom()}
+              placeholder={placeholder || "Custom domain…"}
+              style={{ ...S.input, width: "180px", padding: "5px 10px", fontSize: "12px" }}
+            />
+            <button type="button" onClick={addCustom} style={{ ...S.btnPrimary, padding: "5px 10px", fontSize: "12px" }}>Add</button>
+            <button type="button" onClick={() => setShowCustom(false)} style={{ ...S.btnGhost, padding: "5px 10px", fontSize: "12px" }}>✕</button>
+          </div>
+        ) : (
+          <button type="button" onClick={() => setShowCustom(true)} style={{ ...chipIdle, borderStyle: "dashed", color: "#4f7cff" }}>
+            + Custom
+          </button>
+        )}
+      </div>
+      <div style={{ fontSize: "10px", color: "#4a5364", fontFamily: "'DM Mono',monospace" }}>
+        {selected.length === 0 ? "Select one or more domains above" : `${selected.length} domain${selected.length > 1 ? "s" : ""} selected`}
+      </div>
+    </div>
+  );
+}
+
+
 function FieldInput({ field, value, onChange, onUpload, onMultiUpload, uploading }) {
   const v = value ?? "";
 
@@ -194,6 +378,14 @@ function FieldInput({ field, value, onChange, onUpload, onMultiUpload, uploading
     return <textarea placeholder={field.placeholder} value={str} onChange={e => onChange(e.target.value)} style={{ ...S.textarea, minHeight: "80px", fontSize: "12px", fontFamily: "'DM Mono', monospace" }} />;
   }
 
+  if (field.type === "combobox") {
+    return <ComboSelect value={v} onChange={onChange} options={field.options || []} placeholder={field.placeholder} />;
+  }
+
+  if (field.type === "richtext") {
+    return <RichTextEditor value={value} onChange={onChange} placeholder={field.placeholder} />;
+  }
+
   if (field.type === "textarea") {
     return <textarea placeholder={field.placeholder} value={v} onChange={e => onChange(e.target.value)} style={S.textarea} />;
   }
@@ -205,7 +397,7 @@ function FieldInput({ field, value, onChange, onUpload, onMultiUpload, uploading
   if (field.type === "image") {
     return (
       <div>
-        {v && <img src={v} alt="preview" style={S.imgPreview} />}
+        {v && <Image src={v} alt="preview" width={400} height={160} style={S.imgPreview} />}
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input type="text" value={v} onChange={e => onChange(e.target.value)} style={{ ...S.input, fontSize: "12px" }} placeholder="https://..." />
           <input type="file" accept="image/*" onChange={e => onUpload(e, field.key)}
@@ -228,7 +420,7 @@ function FieldInput({ field, value, onChange, onUpload, onMultiUpload, uploading
           <div style={S.galleryGrid}>
             {urls.map((url, i) => (
               <div key={i} style={{ position: "relative" }}>
-                <img src={url} alt={`gallery-${i}`} style={S.galleryThumb} />
+                <Image src={url} alt={`gallery-${i}`} width={72} height={72} style={S.galleryThumb} />
                 <button onClick={() => onChange(JSON.stringify(urls.filter((_, idx) => idx !== i)))}
                   style={{ position: "absolute", top: "-4px", right: "-4px", width: "18px", height: "18px", borderRadius: "50%", background: "#ef4444", color: "#fff", border: "none", cursor: "pointer", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
               </div>
@@ -375,12 +567,15 @@ export function Admin({}) {
 
   useEffect(() => {
     if (session) fetchData();
-  }, [activeTab, session]);
+  }, [activeTab, session?.user?.id]);
+
+  useEffect(() => {
+    setEditingItem(null);
+    setIsCreating(false);
+  }, [activeTab]);
 
   async function fetchData() {
     setLoading(true);
-    setEditingItem(null);
-    setIsCreating(false);
     try {
       const { data: rows, error } = await supabase.from(activeTab).select("*").order("id", { ascending: true });
       if (error) throw error;
@@ -475,7 +670,7 @@ export function Admin({}) {
                   onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", minWidth: 0 }}>
                     {(item.image_url) && (
-                      <img src={item.image_url} alt="" style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "6px", flexShrink: 0 }} />
+                      <Image src={item.image_url} alt="" width={48} height={48} style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "6px", flexShrink: 0 }} />
                     )}
                     <div style={{ minWidth: 0 }}>
                       <div style={S.rowTitle}>{itemLabel(item)}</div>
@@ -513,4 +708,5 @@ export function Admin({}) {
     </div>
   );
 }
+
 

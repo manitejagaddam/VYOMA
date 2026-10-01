@@ -3,7 +3,7 @@
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { STAGES } from "@/lib/fallback";
-const workResearch = "/assets/work-research.png";
+const workResearch = "/assets/work-research.webp";
 import { Timeline } from "@/components/ui/timeline";
 
 export function Process({}) {

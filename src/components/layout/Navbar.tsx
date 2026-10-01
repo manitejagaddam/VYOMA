@@ -1,15 +1,27 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NextLink from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { HoveredLink, Menu, MenuItem } from "@/components/ui/navbar-menu";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/providers/ThemeProvider";
-const logo = "/assets/Logo.png";
+const logo = "/assets/Logo.webp";
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  // Render a placeholder button of the same size to prevent layout shift during SSR/Hydration
+  if (!mounted) {
+    return <button className="p-2 w-10 h-10 rounded-full" aria-label="Toggle theme" />;
+  }
+
   return (
     <button
       className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors text-black dark:text-white"
@@ -47,7 +59,7 @@ export function Navbar({ className }: { className?: string }) {
     <>
       <div className={cn("fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 flex items-center justify-between px-4 md:px-6 py-2 rounded-full border border-transparent dark:bg-black dark:border-white/[0.2] bg-white shadow-input backdrop-blur-md", className)}>
         <NextLink href="/" className="flex items-center gap-3">
-          <Image src={logo} alt="VYOMA Logo" className="h-6 md:h-8 w-auto object-contain dark:invert" width={120} height={32} />
+          <Image src={logo} alt="VYOMA Logo" className="h-6 md:h-8 w-auto object-contain dark:invert" style={{ width: "auto" }} width={32} height={32} />
           <span className="hidden xl:inline-block text-[11px] uppercase tracking-widest font-mono text-neutral-500 dark:text-neutral-400">
             Design &middot; Engineering &middot; Intelligence
           </span>

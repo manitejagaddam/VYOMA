@@ -15,28 +15,29 @@ export function FloatingContactDock() {
       icon: (
         <IconMail className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "mailto:hello@vyoma.studio",
+      href: "mailto:support@vyoma.world",
     },
     {
       title: "WhatsApp",
       icon: (
         <IconBrandWhatsapp className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "https://wa.me/yourwhatsappnumber",
+      // TODO: Replace with your actual WhatsApp number (digits only, with country code)
+      href: "https://wa.me/XXXXXXXXXX?text=Hi%20VYOMA%2C%20I%27d%20like%20to%20discuss%20a%20project",
     },
     {
       title: "LinkedIn",
       icon: (
         <IconBrandLinkedin className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "https://linkedin.com",
+      href: "https://linkedin.com/company/vyoma",
     },
     {
       title: "GitHub",
       icon: (
         <IconBrandGithub className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "https://github.com",
+      href: "https://github.com/vyoma",
     },
   ];
 

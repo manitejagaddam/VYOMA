@@ -1,15 +1,15 @@
 "use client";
 /** pages/Home.jsx */
 import { useState } from "react";
+import Image from "next/image";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
-import { ProjectCard } from "@/components/shared/ProjectCard";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { OverviewBar } from "@/components/shared/OverviewBar";
 import { useSupabaseQuery } from "@/hooks/useData";
 import { STAGES, TECHNOLOGIES } from "@/lib/fallback";
-const heroImg = "/assets/feature-ai.png";
+const heroImg = "/assets/feature-ai.webp";
 
 /* ── Sub-sections ─────────────────────────────────────────────── */
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
@@ -28,9 +28,13 @@ function HeroSection({}) {
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
       {/* Background image layer */}
       <div className="hero-background">
-        <img
+        <Image
           src={heroImg}
           alt="VYOMA design engineering and intelligence system"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="hero-overlay" />
       </div>
@@ -164,45 +168,61 @@ function SelectedWork({}) {
 function WhatWeBuild({}) {
   const { data: services, loading } = useSupabaseQuery("services", { order: { column: "no" } });
 
+  const carouselItems = (services || []).map(b => (
+    <div className="w-80 md:w-96 flex-shrink-0 h-[40rem]" key={b.slug}>
+      <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
+        <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
+        
+        <div className="relative z-10 flex flex-col h-full">
+          <div className="w-full mb-6">
+            {b.image_url ? (
+              <div className="relative h-48 w-full rounded-xl shadow-lg overflow-hidden mb-6">
+                <Image src={b.image_url} alt={b.title} fill sizes="(max-width: 768px) 320px, 384px" priority={b.no === 1 || b.no === 2} className="object-cover" />
+              </div>
+            ) : (
+              <div className="h-48 w-full bg-neutral-200 dark:bg-neutral-800/50 rounded-xl mb-6"></div>
+            )}
+          </div>
+          <p className="eyebrow mt-2 mb-2">0{b.no}</p>
+          <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-4">
+            {b.title}
+          </h3>
+          <p className="text-neutral-500 text-sm mt-2 dark:text-neutral-400 space-y-2">
+            {(b.deliverables || []).slice(0, 5).map(i => (
+              <span key={i} className="block mb-2">
+                {i}
+              </span>
+            ))}
+          </p>
+          
+          <div className="mt-auto pt-4">
+            <Btn to={`/services/${b.slug}`} variant="cta" aria-label={`Explore ${b.title} Service`}>
+              Explore Service
+            </Btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  ));
+
   return (
-    <section className="section what-we-build has-bg-dot">
-      <SectionKicker left="Capabilities" right="What VYOMA builds across every engagement" />
-      {loading ? <LoadingSpinner label="Loading capabilities…" /> : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 w-full">
-          {services.map(b => (
-            <div className="w-full" key={b.slug}>
-              <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
-                <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
-                
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-full mb-6">
-                    {b.image_url ? (
-                      <img src={b.image_url} alt={b.title} loading="lazy" className="h-60 w-full object-cover rounded-xl shadow-lg" />
-                    ) : (
-                      <div className="h-60 w-full bg-neutral-200 dark:bg-neutral-800/50 rounded-xl"></div>
-                    )}
-                  </div>
-                  <p className="eyebrow mt-4 mb-2">0{b.no}</p>
-                  <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase font-display mb-4">
-                    {b.title}
-                  </h3>
-                  <p className="text-neutral-500 text-sm mt-2 dark:text-neutral-400 space-y-2 flex-grow">
-                    {(b.deliverables || []).slice(0, 5).map(i => (
-                      <span key={i} className="block mb-2">
-                        {i}
-                      </span>
-                    ))}
-                  </p>
-                  
-                  <div className="mt-8">
-                    <Btn to={`/services/${b.slug}`} variant="cta">
-                      Explore Service
-                    </Btn>
-                  </div>
-                </div>
+    <section className="section what-we-build has-bg-dot overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 w-full">
+        <SectionKicker 
+          left="Capabilities" 
+          right={
+            <div className="flex items-center gap-6">
+              <span className="hidden md:inline">What VYOMA builds across every engagement</span>
+              <div className="font-sans normal-case tracking-normal">
+                <Btn to="/services" variant="outline">View all services</Btn>
               </div>
             </div>
-          ))}
+          } 
+        />
+      </div>
+      {loading ? <LoadingSpinner label="Loading capabilities…" /> : (
+        <div className="w-full h-full pb-10 mt-8">
+          <Carousel items={carouselItems} />
         </div>
       )}
     </section>
@@ -395,11 +415,9 @@ function TeamPreview({}) {
               <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl p-6 border flex flex-col justify-start">
                 <CardItem translateZ="50" className="mb-4">
                   {member.image_url ? (
-                    <img 
-                      src={member.image_url} 
-                      alt={member.name}
-                      className="w-11 h-11 rounded-full object-cover flex-shrink-0 shadow-sm"
-                    />
+                    <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 shadow-sm">
+                      <Image src={member.image_url} alt={member.name} fill sizes="44px" className="object-cover" />
+                    </div>
                   ) : (
                     <div className="team-mini-avatar">
                       {member.name.charAt(0)}
@@ -437,11 +455,11 @@ function FeaturedCaseStudy({}) {
     <section className="section featured-case">
       <SectionKicker left="Case study spotlight" right="One project, in depth" />
       <div className="featured-case-inner">
-        <figure>
-          <img src={project.image_url} alt={project.title} loading="lazy" />
+        <figure className="relative min-h-[320px] overflow-hidden rounded-xl">
+          {project.image_url && <Image src={project.image_url} alt={project.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />}
         </figure>
         <div className="featured-case-content">
-          <span className="featured-cat">{project.role}</span>
+          <span className="featured-cat">{Array.isArray(project.role) ? project.role.join(" · ") : (()=>{ try{ const p=JSON.parse(project.role); return Array.isArray(p)?p.join(" · "):project.role; }catch{return project.role;} })()}</span>
           <h2>{project.title}</h2>
           <p>{project.overview}</p>
           <div className="featured-stack">

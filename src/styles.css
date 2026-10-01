@@ -1034,10 +1034,10 @@ html {
     transform: translateY(-3px);
     box-shadow: 0 12px 36px rgba(26,79,255,0.10), inset 0 1px 0 rgba(255,255,255,0.9);
   }
-  .insight-tag { @apply text-[10px] font-bold tracking-[2px] uppercase; font-family: var(--font-mono); color: var(--accent); }
+  .insight-tag { @apply text-[10px] font-bold tracking-[2px] uppercase; font-family: var(--font-mono); color: var(--text); }
   .insight-card h3 { @apply font-semibold text-[22px] m-0 leading-tight; font-family: var(--font-display); }
   .insight-card p { @apply text-[15px] leading-relaxed flex-1; color: var(--text-muted); }
-  .insight-link { @apply font-semibold text-[12px] tracking-wide uppercase; font-family: var(--font-mono); color: var(--text-dim); transition: color var(--transition); }
+  .insight-link { @apply font-semibold text-[12px] tracking-wide uppercase; font-family: var(--font-mono); color: var(--text); transition: color var(--transition); }
   .insight-link:hover { color: var(--accent-2); }
 
   /* ── FAQ — glass items in light mode ── */
@@ -1161,8 +1161,8 @@ html {
   .sol-split-row--reverse { direction: rtl; }
   .sol-split-row--reverse > * { direction: ltr; }
 
-  .sol-split-img { @apply relative overflow-hidden; border-right: 1px solid var(--border); }
-  .sol-split-row--reverse .sol-split-img { border-right: 0; border-left: 1px solid var(--border); }
+  .sol-split-img { @apply relative overflow-hidden; border-left: 1px solid var(--border); }
+  .sol-split-row--reverse .sol-split-img { border-left: 0; border-right: 1px solid var(--border); }
   .sol-split-img img { @apply w-full h-full object-cover block; object-position: center; transition: transform 0.7s cubic-bezier(0.4,0,0.2,1); }
   .sol-split-row:hover .sol-split-img img { transform: scale(1.04); }
   .sol-split-copy {
@@ -1295,6 +1295,18 @@ html {
   .case-left, .case-right { @apply flex flex-col gap-10; }
   .case-block span { @apply font-bold text-[9px] tracking-[2px] uppercase block mb-3; font-family: var(--font-mono); color: var(--accent); }
   .case-block p { @apply text-base leading-loose; color: var(--text-muted); }
+  .case-rich { color: var(--text-muted); font-size: 15px; line-height: 1.75; }
+  .case-rich p { margin-bottom: 12px; }
+  .case-rich strong { color: var(--text); font-weight: 600; }
+  .case-rich em { font-style: italic; }
+  .case-rich h2 { font-size: 16px; font-weight: 700; color: var(--text); margin: 18px 0 8px; font-family: var(--font-display); }
+  .case-rich h3 { font-size: 14px; font-weight: 600; color: var(--text); margin: 14px 0 6px; font-family: var(--font-display); }
+  .case-rich ul { list-style: none; padding: 0; margin: 8px 0 12px; display: flex; flex-direction: column; gap: 6px; }
+  .case-rich ul li { padding-left: 18px; position: relative; }
+  .case-rich ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 13px; }
+  .case-rich ol { list-style: none; padding: 0; margin: 8px 0 12px; display: flex; flex-direction: column; gap: 6px; counter-reset: rich-ol; }
+  .case-rich ol li { padding-left: 24px; position: relative; counter-increment: rich-ol; }
+  .case-rich ol li::before { content: counter(rich-ol, decimal-leading-zero) '.'; position: absolute; left: 0; color: var(--accent); font-size: 11px; font-family: var(--font-mono); font-weight: 700; top: 2px; }
   .stack-tags { @apply flex flex-wrap gap-2; }
   .stack-tag { @apply text-[11px] px-2.5 py-1 rounded-sm; font-family: var(--font-mono); background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); }
   .case-results { @apply flex flex-col; border-top: 1px solid var(--border); }

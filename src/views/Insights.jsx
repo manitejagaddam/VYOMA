@@ -6,7 +6,7 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
 
-const workResearch = "/assets/work-research.png";
+const workResearch = "/assets/work-research.webp";
 
 export function Insights(props) {
   const { data: posts, loading } = useSupabaseQuery(

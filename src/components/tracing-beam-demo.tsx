@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React from "react";
 // Removed calsans import since it doesn't exist in our project, and replaced its usage with our display font class.
 
@@ -21,7 +22,7 @@ export default function TracingBeamDemo() {
 
             <div className="text-sm  prose prose-sm dark:prose-invert">
               {item?.image && (
-                <img
+                <Image
                   src={item.image}
                   alt="blog thumbnail"
                   height="1000"

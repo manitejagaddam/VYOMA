@@ -1,10 +1,10 @@
 "use client";
 /** pages/Team.jsx */
+import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
-import { Btn } from "@/components/shared/Btn";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
-const productDesign = "/assets/vyoma-product-design.png";
+const productDesign = "/assets/vyoma-product-design.webp";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { FinalCTA } from "@/components/shared/FinalCTA";
 
@@ -49,12 +49,13 @@ export function Team(props) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {members.map(member => (
                   <article key={member.id} className="flex flex-col md:flex-row gap-6 p-6 md:p-8 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] transition-colors shadow-sm">
-                    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden flex-shrink-0 border border-[var(--accent)]/30 drop-shadow-md">
-                      <img 
-                        src={member.image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random`} 
+                    <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden flex-shrink-0 border border-[var(--accent)]/30 drop-shadow-md">
+                      <Image
+                        src={member.image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random`}
                         alt={`${member.name} — ${member.role} at VYOMA`}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="128px"
+                        className="object-cover"
                       />
                     </div>
                     <div className="flex flex-col justify-start flex-grow">

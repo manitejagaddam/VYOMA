@@ -4,15 +4,18 @@
  *   left = image bleeding edge-to-edge (alternates side by side)
  *   right = category, title, description, steps, CTA
  */
+import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
+import { Link } from "@/components/shared/Link";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
-const agencySystem = "/assets/vyoma-agency-system.png";
+const agencySystem = "/assets/vyoma-agency-system.webp";
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { FinalCTA } from "@/components/shared/FinalCTA";
+
 
 export function Solutions(props) {
   const { data: solutions, loading } = useSupabaseQuery(
@@ -35,9 +38,7 @@ export function Solutions(props) {
           const isEven = i % 2 === 0;
           return (
             <article key={sol.slug} className={`sol-split-row${isEven ? "" : " sol-split-row--reverse"}`}>
-              <div className="sol-split-img">
-                {img && <img src={img} alt={sol.title} loading="lazy" />}
-              </div>
+              {/* Text half */}
               <div className="sol-split-copy relative overflow-hidden">
                 <BackgroundRippleEffect />
                 <div className="relative z-10 flex flex-col gap-4">
@@ -50,17 +51,21 @@ export function Solutions(props) {
                   <p className="sol-split-audience">{sol.ideal_for}</p>
                   <p className="sol-split-desc">{sol.intro}</p>
                   {sol.features && sol.features.length > 0 && (
-                    <ol className="sol-split-steps">
-                      {sol.features.map((s, j) => (
-                        <li key={s}>
-                          <span className="sol-step-n">{String(j + 1).padStart(2, "0")}</span>
-                          <span>{s}</span>
-                        </li>
+                    <div className="svc-split-tags">
+                      {sol.features.slice(0, 6).map((s) => (
+                        <span key={s} className="svc-split-tag">{s}</span>
                       ))}
-                    </ol>
+                    </div>
                   )}
-                  <Btn to={`/solutions/${sol.slug}`} variant="outline">Explore solution</Btn>
+                  <Link to={`/solutions/${sol.slug}`} className="svc-split-cta">
+                    Explore solution →
+                  </Link>
                 </div>
+              </div>
+
+              {/* Image half */}
+              <div className="sol-split-img relative min-h-[300px] overflow-hidden">
+                {img && <Image src={img} alt={sol.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />}
               </div>
             </article>
           );

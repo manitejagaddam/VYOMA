@@ -1,13 +1,14 @@
 "use client";
+import Image from "next/image";
 /** pages/About.jsx */
 import { PageHero } from "@/components/shared/PageHero";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { TECHNOLOGIES } from "@/lib/fallback";
-const agencySystem = "/assets/vyoma-agency-system.png";
-const productDesign = "/assets/vyoma-product-design.png";
-const engineeringSystem = "/assets/vyoma-engineering.png";
-const intelligenceSystem = "/assets/vyoma-intelligence.png";
+const agencySystem = "/assets/vyoma-agency-system.webp";
+const productDesign = "/assets/vyoma-product-design.webp";
+const engineeringSystem = "/assets/vyoma-engineering.webp";
+const intelligenceSystem = "/assets/vyoma-intelligence.webp";
 import StickyScrollRevealDemo from "@/components/sticky-scroll-reveal-demo.tsx";
 
 const BELIEFS = [
@@ -52,7 +53,7 @@ export function About({}) {
         <div className="about-pillars-grid">
           {PILLARS.map(p => (
             <article key={p.title} className="about-pillar-card">
-              <figure><img src={p.img} alt={`VYOMA ${p.title} — ${p.desc}`} loading="lazy" /></figure>
+              <figure><Image src={p.img} alt={`VYOMA ${p.title} — ${p.desc}`} loading="lazy" /></figure>
               <h3>{p.title}</h3>
               <p>{p.desc}</p>
             </article>
