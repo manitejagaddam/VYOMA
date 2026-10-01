@@ -41,7 +41,7 @@ export const MenuItem = ({
           transition={transition}
         >
           {active === item && (
-            <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-4">
+            <div className="absolute top-[calc(100%)] left-1/2 transform -translate-x-1/2 pt-[2.2rem]">
               <motion.div
                 transition={transition}
                 layoutId="active" // layoutId ensures smooth animation
@@ -111,11 +111,12 @@ export const ProductItem = ({
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const HoveredLink = ({ children, ...rest }: any) => {
   return (
     <a
       {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors"
+      className="text-neutral-700 dark:text-neutral-200 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
     >
       {children}
     </a>

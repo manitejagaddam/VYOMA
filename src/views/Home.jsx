@@ -5,9 +5,7 @@ import Image from "next/image";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { OverviewBar } from "@/components/shared/OverviewBar";
-import { useSupabaseQuery } from "@/hooks/useData";
 import { STAGES, TECHNOLOGIES } from "@/lib/fallback";
 const heroImg = "/assets/feature-ai.webp";
 
@@ -119,13 +117,10 @@ function CapabilitySnapshot() {
   );
 }
 
-function SelectedWork({}) {
-  const { data: projects, loading } = useSupabaseQuery(
-    "projects",
-    { filter: { published: true }, order: { column: "order_index" }, limit: 4 }
-  );
+function SelectedWork({ projects = [] }) {
+  const selected = projects.slice(0, 4);
 
-  const carouselCards = (projects || []).map((p, index) => (
+  const carouselCards = selected.map((p, index) => (
     <Card 
       key={p.slug} 
       index={index}
@@ -156,19 +151,17 @@ function SelectedWork({}) {
           <Btn to="/work" variant="outline">View all work</Btn>
         </div>
       </div>
-      {loading ? <LoadingSpinner label="Loading projects…" /> : (
-        <div className="w-full h-full pb-10">
-          <Carousel items={carouselCards} />
-        </div>
-      )}
+      <div className="w-full h-full pb-10">
+        <Carousel items={carouselCards} />
+      </div>
     </section>
   );
 }
 
-function WhatWeBuild({}) {
-  const { data: services, loading } = useSupabaseQuery("services", { order: { column: "no" } });
+function WhatWeBuild({ services = [] }) {
+  const sortedServices = [...services].sort((a, b) => a.no - b.no);
 
-  const carouselItems = (services || []).map(b => (
+  const carouselItems = sortedServices.map(b => (
     <div className="w-80 md:w-96 flex-shrink-0 h-[40rem]" key={b.slug}>
       <div className="relative overflow-hidden rounded-xl border border-black/10 dark:border-white/10 dark:bg-[#0a0b0f] p-8 w-full h-full flex flex-col justify-between group/card transition-all hover:border-white/20">
         <Spotlight className="-top-40 left-0 md:-top-20 md:-left-20 transition-opacity duration-500 opacity-50 group-hover/card:opacity-100" fill="white" />
@@ -220,11 +213,9 @@ function WhatWeBuild({}) {
           } 
         />
       </div>
-      {loading ? <LoadingSpinner label="Loading capabilities…" /> : (
-        <div className="w-full h-full pb-10 mt-8">
-          <Carousel items={carouselItems} />
-        </div>
-      )}
+      <div className="w-full h-full pb-10 mt-8">
+        <Carousel items={carouselItems} />
+      </div>
     </section>
   );
 }
@@ -260,20 +251,15 @@ function WhyVYOMA({}) {
   );
 }
 
-function SolutionsPreview({}) {
-  const { data: solutions, loading } = useSupabaseQuery(
-    "solutions",
-    { order: { column: "id" } }
-  );
+function SolutionsPreview({ solutions = [] }) {
   return (
     <section className="section solutions-preview">
       <SectionKicker left="Solutions" right="Start with the business problem" />
       <div className="solutions-header">
         <h2>What kind of project are you working on?</h2>
       </div>
-      {loading ? <LoadingSpinner label="Loading solutions…" /> : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          {solutions.map(sol => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        {solutions.map(sol => (
             <CardContainer className="inter-var w-full" key={sol.slug}>
               <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl p-6 border flex flex-col justify-between">
                 <div>
@@ -295,7 +281,6 @@ function SolutionsPreview({}) {
             </CardContainer>
           ))}
         </div>
-      )}
     </section>
   );
 }
@@ -396,11 +381,7 @@ function TechPreview({}) {
   );
 }
 
-function TeamPreview({}) {
-  const { data: team, loading } = useSupabaseQuery(
-    "team",
-    { order: { column: "order_index" } }
-  );
+function TeamPreview({ team = [] }) {
   return (
     <section className="section home-team">
       <SectionKicker left="The team" right="Different expertise. One team." />
@@ -408,9 +389,8 @@ function TeamPreview({}) {
         <h2>Real people building real products.</h2>
         <Btn to="/team" variant="outline">Meet the team</Btn>
       </div>
-      {loading ? <LoadingSpinner label="Loading team…" /> : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          {team.map(member => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        {team.map(member => (
             <CardContainer className="inter-var w-full" key={member.id}>
               <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-full rounded-xl p-6 border flex flex-col justify-start">
                 <CardItem translateZ="50" className="mb-4">
@@ -439,16 +419,11 @@ function TeamPreview({}) {
             </CardContainer>
           ))}
         </div>
-      )}
     </section>
   );
 }
 
-function FeaturedCaseStudy({}) {
-  const { data: projects } = useSupabaseQuery(
-    "projects",
-    { filter: { published: true }, order: { column: "order_index" }, limit: 1 }
-  );
+function FeaturedCaseStudy({ projects = [] }) {
   const project = projects[0];
   if (!project) return null;
   return (
@@ -472,11 +447,8 @@ function FeaturedCaseStudy({}) {
   );
 }
 
-function InsightsPreview({}) {
-  const { data: posts, loading } = useSupabaseQuery(
-    "posts",
-    { filter: { published: true }, order: { column: "published_at", ascending: false }, limit: 3 }
-  );
+function InsightsPreview({ posts = [] }) {
+  const recentPosts = posts.slice(0, 3);
   return (
     <section className="section home-insights">
       <SectionKicker left="Insights" right="Thinking from the work" />
@@ -484,9 +456,8 @@ function InsightsPreview({}) {
         <h2>Notes on product, engineering, and AI.</h2>
         <Btn to="/insights" variant="outline">All insights</Btn>
       </div>
-      {loading ? <LoadingSpinner label="Loading insights…" /> : (
-        <div className="insights-grid">
-          {posts.map(post => (
+      <div className="insights-grid">
+        {recentPosts.map(post => (
             <article key={post.slug} className="insight-card">
               <span className="insight-tag">{post.tag}</span>
               <h3>{post.title}</h3>
@@ -495,17 +466,13 @@ function InsightsPreview({}) {
             </article>
           ))}
         </div>
-      )}
     </section>
   );
 }
 
-function HomeFAQ({}) {
+function HomeFAQ({ faqs = [] }) {
   const [open, setOpen] = useState(null);
-  const { data: faqs } = useSupabaseQuery(
-    "faqs",
-    { order: { column: "order_index" }, limit: 5 }
-  );
+  const selectedFaqs = faqs.slice(0, 5);
   return (
     <section className="section home-faq" style={{ padding: "120px 6%" }}>
       <div className="faq-two-col">
@@ -516,7 +483,7 @@ function HomeFAQ({}) {
         </div>
         <div className="faq-right">
           <div className="faq-list">
-            {faqs.map((item, i) => (
+            {selectedFaqs.map((item, i) => (
               <article key={item.id ?? i} className={`faq-item${open === i ? " open" : ""}`}>
                 <button onClick={() => setOpen(open === i ? null : i)}>
                   <span className="faq-toggle">{open === i ? "−" : "+"}</span>
@@ -532,22 +499,22 @@ function HomeFAQ({}) {
   );
 }
 /* ── Main Export ─────────────────────────────────────────────── */
-export function Home({}) {
+export function Home({ projects, services, solutions, team, posts, faqs }) {
   return (
     <>
       <HeroSection />
       <OverviewBar />
       <CapabilitySnapshot />
-      <WhatWeBuild />
-      <SelectedWork />
+      <WhatWeBuild services={services} />
+      <SelectedWork projects={projects} />
       <WhyVYOMA />
-      <SolutionsPreview />
+      <SolutionsPreview solutions={solutions} />
       <ProcessPreview />
       <TechPreview />
-      <TeamPreview />
-      <FeaturedCaseStudy />
-      <InsightsPreview />
-      <HomeFAQ />
+      <TeamPreview team={team} />
+      <FeaturedCaseStudy projects={projects} />
+      <InsightsPreview posts={posts} />
+      <HomeFAQ faqs={faqs} />
       <FinalCTA />
     </>
   );

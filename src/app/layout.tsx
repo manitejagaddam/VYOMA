@@ -62,7 +62,7 @@ export const metadata: Metadata = {
       "Technology agency for startups — design, engineering, and AI in one connected team. We build scalable web apps, mobile products, and intelligent systems.",
     images: [
       {
-        url: "/og-image.webp",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "VYOMA Technologies — Custom Software, AI & Product Design Agency",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VYOMA — Custom Software, AI & Product Design Agency",
     description: "Technology agency for startups — design, engineering, and AI in one connected team.",
-    images: ["/og-image.webp"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,

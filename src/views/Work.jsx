@@ -4,16 +4,12 @@ import { useState } from "react";
 import { PageHero } from "@/components/shared/PageHero";
 import { ProjectCard } from "@/components/shared/ProjectCard";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 
 const FILTERS = ["ALL", "WEB", "MOBILE", "AI", "SAAS", "SOFTWARE", "DESIGN"];
 
-export function Work(props) {
+export function Work({ initialProjects = [] }) {
   const [filter, setFilter] = useState("ALL");
-  const { data: projects, loading } = useSupabaseQuery(
-    "projects",
-    { filter: { published: true }, order: { column: "order_index" } }
-  );
+  const projects = initialProjects;
 
   const filtered = filter === "ALL"
     ? projects
@@ -38,14 +34,12 @@ export function Work(props) {
             </button>
           ))}
         </div>
-        {loading ? <LoadingSpinner label="Loading projects…" /> : (
-          filtered.length === 0 ? (
-            <p style={{ color: "var(--text-muted)", textAlign: "center", padding: "80px 0" }}>No projects found.</p>
-          ) : (
-            <div className="project-grid-full">
-              {filtered.map(p => <ProjectCard key={p.slug} project={p} />)}
-            </div>
-          )
+        {filtered.length === 0 ? (
+          <p style={{ color: "var(--text-muted)", textAlign: "center", padding: "80px 0" }}>No projects found.</p>
+        ) : (
+          <div className="project-grid-full">
+            {filtered.map(p => <ProjectCard key={p.slug} project={p} />)}
+          </div>
         )}
       </section>
     </>

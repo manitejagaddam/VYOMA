@@ -781,7 +781,7 @@ html {
   .project-card-body { @apply p-7 pb-9 px-8; }
   .project-card-meta { @apply flex justify-between items-center mb-4; }
   .project-no { @apply text-[11px] font-bold; font-family: var(--font-mono); color: var(--text-dim); }
-  .project-cat { @apply text-[11px] font-medium tracking-wide; font-family: var(--font-mono); color: var(--text-dim); }
+  .project-cat { @apply inline-block px-2.5 py-1 rounded-[4px] text-[10px] uppercase font-bold tracking-widest leading-none; font-family: var(--font-mono); color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); }
   .project-card h3 { @apply text-[30px] font-bold m-0 mb-2; font-family: var(--font-display); }
   .project-label { @apply text-[13px] block mb-3.5; font-family: var(--font-mono); color: var(--accent); }
   .project-summary { @apply text-[15px] leading-relaxed mb-5; color: var(--text-muted); }
@@ -1542,6 +1542,27 @@ html {
   .contact-success h1 { @apply font-bold m-0 max-w-[700px]; font-family: var(--font-display); font-size: clamp(36px,5vw,72px); line-height: 1.05; letter-spacing: -1px; color: var(--text); }
   .contact-success p { @apply text-base; color: var(--text-muted); }
 
+  /* WhatsApp CTA button */
+  .contact-whatsapp-btn {
+    @apply inline-flex items-center gap-3 mt-4 self-start;
+    padding: 10px 20px;
+    border-radius: 99px;
+    background: #25D366;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    box-shadow: 0 2px 12px rgba(37, 211, 102, 0.35);
+  }
+  .contact-whatsapp-btn:hover {
+    background: #1da851;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  }
+  .contact-whatsapp-btn svg { flex-shrink: 0; }
   /* ── Footer ── */
   .site-footer {
     @apply grid gap-12;

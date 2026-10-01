@@ -156,7 +156,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
   );
 };
 
-const BackgroundImagePreloader = ({ items }: { items: any[] }) => {
+const BackgroundImagePreloader = ({ items }: { items: unknown[] }) => {
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {

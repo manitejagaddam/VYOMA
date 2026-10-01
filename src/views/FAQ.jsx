@@ -4,16 +4,12 @@ import { useState } from "react";
 import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 
 const workAutomation = "/assets/work-automation.webp";
 
-export function FAQ({}) {
+export function FAQ({ initialFaqs = [] }) {
   const [open, setOpen] = useState(0);
-  const { data: faqs, loading } = useSupabaseQuery(
-    "faqs",
-    { order: { column: "order_index" } }
-  );
+  const faqs = initialFaqs;
 
   return (
     <>
@@ -25,7 +21,6 @@ export function FAQ({}) {
         imageAlt="Workflow visual"
       />
       <section className="section faq-page">
-        {loading ? <LoadingSpinner label="Loading FAQs…" /> : (
           <div className="faq-list">
             {faqs.map((item, i) => (
               <article key={item.id ?? i} className={`faq-item${open === i ? " open" : ""}`}>
@@ -37,7 +32,6 @@ export function FAQ({}) {
               </article>
             ))}
           </div>
-        )}
         <Btn to="/contact" variant="primary">Ask a different question</Btn>
       </section>
     </>

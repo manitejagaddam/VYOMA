@@ -31,10 +31,9 @@ function RichBlock({ text }) {
   return <div className="case-rich" dangerouslySetInnerHTML={{ __html: mdToHtml(text) }} />;
 }
 export function CaseStudy({ project }) {
-  if (!project) return <NotFound />;
 
-  const heroImage = project.banner_url || project.image_url;
-  const stack = project.tags || [];
+  const heroImage = project?.banner_url || project?.image_url;
+  const stack = project?.tags || [];
 
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
@@ -54,6 +53,8 @@ export function CaseStudy({ project }) {
     else document.body.style.overflow = "auto";
     return () => { document.body.style.overflow = "auto"; };
   }, [lightboxIndex]);
+
+  if (!project) return <NotFound />;
 
   return (
     <>
@@ -202,6 +203,7 @@ export function CaseStudy({ project }) {
     </>
   );
 }
+
 
 
 

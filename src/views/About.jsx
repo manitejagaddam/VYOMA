@@ -53,7 +53,7 @@ export function About({}) {
         <div className="about-pillars-grid">
           {PILLARS.map(p => (
             <article key={p.title} className="about-pillar-card">
-              <figure><Image src={p.img} alt={`VYOMA ${p.title} — ${p.desc}`} loading="lazy" /></figure>
+              <figure className="relative"><Image src={p.img} alt={`VYOMA ${p.title} — ${p.desc}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" loading="lazy" /></figure>
               <h3>{p.title}</h3>
               <p>{p.desc}</p>
             </article>

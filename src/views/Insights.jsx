@@ -3,16 +3,12 @@
 import { PageHero } from "@/components/shared/PageHero";
 import { Link } from "@/components/shared/Link";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
 
 const workResearch = "/assets/work-research.webp";
 
-export function Insights(props) {
-  const { data: posts, loading } = useSupabaseQuery(
-    "posts",
-    { filter: { published: true }, order: { column: "published_at", ascending: false } }
-  );
+export function Insights({ initialPosts = [] }) {
+  const posts = initialPosts;
 
   return (
     <>
@@ -24,7 +20,7 @@ export function Insights(props) {
         imageAlt="Research landscape"
       />
       <section className="section insights-page">
-        {loading ? <LoadingSpinner label="Loading insights…" /> : posts.map((post, i) => (
+        {posts.map((post, i) => (
           <article key={post.slug} className="insight-row">
             <span className="insight-no">0{i + 1}</span>
             <span className="insight-tag-label">{post.tag}</span>

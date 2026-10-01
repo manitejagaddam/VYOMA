@@ -57,3 +57,4 @@ export const getSolutionBySlug = cache((slug: string) => fetchOne("solutions", "
 export const getPosts       = cache(() => fetchRows("posts",        { filter: { published: true }, order: { column: "published_at", ascending: false } }));
 export const getPostBySlug  = cache((slug: string) => fetchOne("posts",     "slug", slug));
 export const getTeamMembers = cache(() => fetchRows("team_members", { order: { column: "order_index" } }));
+export const getFaqs        = cache(() => fetchRows("faqs",         { order: { column: "order_index" } }));

@@ -45,6 +45,38 @@ function ThemeToggle() {
   );
 }
 
+function MobileNavGroup({ title, href, subitems, nav }: { title: string, href: string, subitems?: {label: string, href: string}[], nav: (to: string) => void }) {
+  const [open, setOpen] = useState(false);
+  
+  if (!subitems) {
+    return (
+      <button onClick={() => nav(href)} className="text-left font-bold text-lg text-black dark:text-white">{title}</button>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex justify-between items-center">
+        <button onClick={() => nav(href)} className="text-left font-bold text-lg text-black dark:text-white">{title}</button>
+        <button onClick={() => setOpen(!open)} className="p-2 text-black dark:text-white" aria-label={`Toggle ${title}`}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transform transition-transform ${open ? "rotate-180" : ""}`}>
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+      {open && (
+        <div className="flex flex-col space-y-4 mt-4 pl-4 border-l-2 border-neutral-200 dark:border-neutral-800">
+          {subitems.map((sub, i) => (
+             <button key={i} onClick={() => nav(sub.href)} className="text-left text-base text-neutral-600 dark:text-neutral-400 font-medium hover:text-amber-500 dark:hover:text-amber-400 transition-colors">
+               {sub.label}
+             </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -106,7 +138,7 @@ export function Navbar({ className }: { className?: string }) {
               </div>
             </MenuItem>
 
-            <NextLink href="/work" className="text-black dark:text-white text-sm font-medium hover:opacity-80 transition-opacity ml-4 self-center">
+            <NextLink href="/work" onMouseEnter={() => setActive(null)} className="text-black dark:text-white text-sm font-medium hover:opacity-80 transition-opacity ml-4 self-center">
               Work
             </NextLink>
           </Menu>
@@ -129,10 +161,41 @@ export function Navbar({ className }: { className?: string }) {
 
       {mobileOpen && (
         <div className="lg:hidden fixed inset-x-4 top-20 z-40 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl p-6 flex flex-col space-y-6">
-          <div className="flex flex-col space-y-4">
-            {[["Services","/services"],["Solutions","/solutions"],["Work","/work"],["About","/about"],["Insights","/insights"]].map(([l,h]) => (
-              <button key={h} onClick={() => nav(h)} className="text-left font-bold text-lg text-black dark:text-white">{l}</button>
-            ))}
+          <div className="flex flex-col space-y-4 max-h-[60vh] overflow-y-auto">
+            <MobileNavGroup 
+              title="Services" href="/services" nav={nav}
+              subitems={[
+                { label: "UI/UX & Product Design", href: "/services/ui-ux-product-design" },
+                { label: "Web Development", href: "/services/web-development" },
+                { label: "Mobile Apps", href: "/services/mobile-app-development" },
+                { label: "SaaS Development", href: "/services/saas-development" },
+                { label: "AI & GenAI", href: "/services/ai-genai" },
+                { label: "Chatbots", href: "/services/chatbots-conversational-ai" },
+                { label: "Backend & Cloud", href: "/services/backend-cloud" },
+                { label: "Automation", href: "/services/automation-integrations" }
+              ]} 
+            />
+            <MobileNavGroup 
+              title="Solutions" href="/solutions" nav={nav}
+              subitems={[
+                { label: "For Startups", href: "/solutions/startup-solutions" },
+                { label: "MVP Development", href: "/solutions/mvp-development" },
+                { label: "Business Automation", href: "/solutions/business-automation" },
+                { label: "AI Transformation", href: "/solutions/ai-transformation" },
+                { label: "Enterprise Software", href: "/solutions/enterprise-software" }
+              ]} 
+            />
+            <MobileNavGroup 
+              title="Company" href="/about" nav={nav}
+              subitems={[
+                { label: "About VYOMA", href: "/about" },
+                { label: "Our Team", href: "/team" },
+                { label: "Methodology", href: "/process" },
+                { label: "Engagement Models", href: "/engagement-models" },
+                { label: "Insights", href: "/insights" }
+              ]} 
+            />
+            <MobileNavGroup title="Work" href="/work" nav={nav} />
           </div>
           <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800">
             <button onClick={() => nav("/contact")} className="w-full bg-black dark:bg-white text-white dark:text-black font-bold rounded-full py-3">Contact Us</button>

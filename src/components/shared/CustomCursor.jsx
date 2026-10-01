@@ -12,8 +12,13 @@ export function CustomCursor() {
   const cursorY = useMotionValue(-100);
 
   useEffect(() => {
-    // Only show custom cursor on non-touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    // Only show custom cursor on desktop/non-touch devices
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    
+    if (isTouchDevice || isMobile) {
+      return;
+    }
 
     const moveCursor = (e) => {
       cursorX.set(e.clientX);
@@ -52,7 +57,7 @@ export function CustomCursor() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed top-0 left-0 z-[9999]"
+      className="pointer-events-none fixed top-0 left-0 z-[9999] hidden md:block"
       style={{
         x: cursorX,
         y: cursorY,

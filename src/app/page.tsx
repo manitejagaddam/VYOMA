@@ -1,6 +1,5 @@
-// app/page.tsx — Home (SSG: statically generated at build)
 import type { Metadata } from "next";
-import { getProjects, getServices } from "@/lib/data";
+import { getProjects, getServices, getSolutions, getTeamMembers, getPosts, getFaqs } from "@/lib/data";
 import { HomeClient } from "@/components/pages/HomeClient";
 
 export const metadata: Metadata = {
@@ -9,6 +8,23 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [projects, services] = await Promise.all([getProjects(), getServices()]);
-  return <HomeClient projects={projects} services={services} />;
+  const [projects, services, solutions, team, posts, faqs] = await Promise.all([
+    getProjects(),
+    getServices(),
+    getSolutions(),
+    getTeamMembers(),
+    getPosts(),
+    getFaqs()
+  ]);
+
+  return (
+    <HomeClient 
+      projects={projects} 
+      services={services} 
+      solutions={solutions} 
+      team={team} 
+      posts={posts} 
+      faqs={faqs} 
+    />
+  );
 }

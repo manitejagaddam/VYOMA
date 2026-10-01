@@ -3,18 +3,14 @@
 import Image from "next/image";
 import { PageHero } from "@/components/shared/PageHero";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 const productDesign = "/assets/vyoma-product-design.webp";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { FinalCTA } from "@/components/shared/FinalCTA";
 
 const GROUPS = ["Leadership", "Design", "Engineering", "AI & ML", "Quality & Delivery"];
 
-export function Team(props) {
-  const { data: team, loading } = useSupabaseQuery(
-    "team",
-    { order: { column: "order_index" } }
-  );
+export function Team({ initialMembers = [] }) {
+  const team = initialMembers;
 
   return (
     <>
@@ -27,7 +23,7 @@ export function Team(props) {
       />
 
       <div className="flex flex-row items-center justify-center my-10 w-full">
-        {!loading && team && (
+        {team && (
           <AnimatedTooltip
             items={team.map((m) => ({
               id: m.id,
@@ -39,8 +35,7 @@ export function Team(props) {
         )}
       </div>
 
-      {loading ? <div className="section"><LoadingSpinner label="Loading team…" /></div> : (
-        GROUPS.map(group => {
+      {GROUPS.map(group => {
           const members = team.filter(m => (m.group || "Leadership") === group);
           if (!members.length) return null;
           return (
@@ -85,8 +80,7 @@ export function Team(props) {
               </div>
             </section>
           );
-        })
-      )}
+        })}
 
       <FinalCTA />
     </>

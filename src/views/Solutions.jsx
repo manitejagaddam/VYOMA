@@ -9,7 +9,6 @@ import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
 const agencySystem = "/assets/vyoma-agency-system.webp";
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
@@ -17,11 +16,8 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 import { FinalCTA } from "@/components/shared/FinalCTA";
 
 
-export function Solutions(props) {
-  const { data: solutions, loading } = useSupabaseQuery(
-    "solutions",
-    { order: { column: "id" } }
-  );
+export function Solutions({ initialSolutions = [] }) {
+  const solutions = initialSolutions;
 
   return (
     <>
@@ -33,7 +29,7 @@ export function Solutions(props) {
         imageAlt="Connected technology system"
       />
       <section className="solutions-split-list">
-        {loading ? <LoadingSpinner label="Loading solutions…" /> : solutions.map((sol, i) => {
+        {solutions.map((sol, i) => {
           const img = sol.image_url;
           const isEven = i % 2 === 0;
           return (
@@ -106,7 +102,7 @@ export function SolutionDetail({ solution }) {
           </div>
         </div>
       </section>
-      <FinalCTA />
+      <FinalCTA serviceSlug={solution.slug} />
     </>
   );
 }

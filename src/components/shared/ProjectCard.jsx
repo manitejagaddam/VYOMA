@@ -25,8 +25,10 @@ export function ProjectCard({ project, go }) {
       </Link>
       <div className="project-card-body">
         <div className="project-card-meta">
-          {(()=>{ let roles=[]; try{ const p=typeof project.role==="string"?JSON.parse(project.role):project.role; roles=Array.isArray(p)?p:[p]; }catch{ roles=[project.role]; } return roles.filter(Boolean).map(r=><span key={r} className="project-cat">{r}</span>); })()}
-          <span className="project-year">{project.year}</span>
+          <div className="flex flex-wrap gap-2 max-w-[80%]">
+            {(()=>{ let roles=[]; try{ const p=typeof project.role==="string"?JSON.parse(project.role):project.role; roles=Array.isArray(p)?p:[p]; }catch{ roles=[project.role]; } return roles.filter(Boolean).map(r=><span key={r} className="project-cat">{r}</span>); })()}
+          </div>
+          <span className="project-year shrink-0">{project.year}</span>
         </div>
         <h3>{project.title}</h3>
         <p className="project-summary">{project.overview}</p>

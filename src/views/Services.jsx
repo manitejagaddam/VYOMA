@@ -10,7 +10,6 @@ import { PageHero } from "@/components/shared/PageHero";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { useSupabaseQuery } from "@/hooks/useData";
 import { NotFound } from "./NotFound";
 const workAutomation = "/assets/work-automation.webp";
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
@@ -18,11 +17,8 @@ import { FinalCTA } from "@/components/shared/FinalCTA";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 
 
-export function Services(props) {
-  const { data: services, loading } = useSupabaseQuery(
-    "services",
-    { order: { column: "id" } }
-  );
+export function Services({ initialServices = [] }) {
+  const services = initialServices;
 
   return (
     <>
@@ -34,7 +30,7 @@ export function Services(props) {
         imageAlt="Modular workflow artifact"
       />
       <section className="services-split-list">
-        {loading ? <LoadingSpinner label="Loading services…" /> : services.map((svc, i) => {
+        {services.map((svc, i) => {
           const img = svc.image_url;
           const isEven = i % 2 === 0;
           return (
@@ -127,7 +123,7 @@ export function ServiceDetail({ service }) {
         </section>
       )}
 
-      <FinalCTA />
+      <FinalCTA serviceSlug={service.slug} />
     </>
   );
 }

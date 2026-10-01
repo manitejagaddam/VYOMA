@@ -1,0 +1,18 @@
+name: Uptime Monitor
+
+on:
+  schedule:
+    # Run every day
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Website Uptime
+      uses: lakuapik/gh-actions-http-status@v1
+      with:
+        sites: '["https://vyoma.world"]'
+        expected: '[200]'

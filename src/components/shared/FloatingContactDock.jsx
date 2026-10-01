@@ -22,8 +22,7 @@ export function FloatingContactDock() {
       icon: (
         <IconBrandWhatsapp className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      // TODO: Replace with your actual WhatsApp number (digits only, with country code)
-      href: "https://wa.me/XXXXXXXXXX?text=Hi%20VYOMA%2C%20I%27d%20like%20to%20discuss%20a%20project",
+      href: "https://wa.me/919494785078?text=Hi%20VYOMA%2C%20I%27d%20like%20to%20discuss%20a%20project",
     },
     {
       title: "LinkedIn",
