@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <p><strong>Last updated:</strong> October 1, 2026</p>
 
       <p>
-        This policy explains what personal data VYOMA ("we", "us") collects through
+        This policy explains what personal data VYOMA (&quot;we&quot;, &quot;us&quot;) collects through
         this website, why we collect it, and the choices you have. By using the site or
         submitting an inquiry, you agree to the practices described here.
       </p>
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <li>Your name and email address</li>
         <li>Project details, budget, timeline, and anything else you choose to include</li>
       </ul>
-      <p><strong>Information collected automatically.</strong> Like most websites, we may collect basic technical data such as IP address, browser type, device type, pages visited, and referring page. [Remove this if you don't use analytics or server logs.]</p>
+      <p><strong>Information collected automatically.</strong> Like most websites, we may collect basic technical data such as IP address, browser type, device type, pages visited, and referring page. [Remove this if you don&apos;t use analytics or server logs.]</p>
 
       <h2>How We Use Your Information</h2>
       <ul>
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
       <p>We use reasonable technical and organizational safeguards, including encrypted connections (HTTPS) and access controls, to protect your data. No online system is completely secure, so we cannot guarantee absolute security, but we will act promptly if we become aware of a breach affecting your data.</p>
 
       <h2>Your Rights</h2>
-      <p>Subject to applicable law (including India's Digital Personal Data Protection Act, 2023, and GDPR where relevant), you may:</p>
+      <p>Subject to applicable law (including India&apos;s Digital Personal Data Protection Act, 2023, and GDPR where relevant), you may:</p>
       <ul>
         <li>Request access to the personal data we hold about you</li>
         <li>Request correction of inaccurate or incomplete data</li>
@@ -64,14 +64,14 @@ export default function PrivacyPage() {
       </ul>
       <p>To exercise any of these rights, email <a href="mailto:support@vyoma.world">support@vyoma.world</a>. We aim to respond within [30] days.</p>
 
-      <h2>Children's Privacy</h2>
+      <h2>Children&apos;s Privacy</h2>
       <p>Our services are intended for businesses and adults. We do not knowingly collect personal data from children under 18. If you believe a child has submitted data to us, contact us and we will delete it.</p>
 
       <h2>International Data Transfers</h2>
       <p>Our service providers may store or process data on servers outside your country. Where this happens, we take steps to ensure your data remains protected.</p>
 
       <h2>Changes to This Policy</h2>
-      <p>We may update this policy from time to time. The "Last updated" date above shows when it last changed, and material changes will be reflected on this page.</p>
+      <p>We may update this policy from time to time. The &quot;Last updated&quot; date above shows when it last changed, and material changes will be reflected on this page.</p>
 
       <h2>Contact Us</h2>
       <p>
