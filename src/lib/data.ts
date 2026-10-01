@@ -48,13 +48,52 @@ async function fetchOne(table: string, column: string, value: string): Promise<D
   return (data as unknown as DataRow) || null;
 }
 
-export const getProjects    = cache(() => fetchRows("projects",     { filter: { published: true }, order: { column: "order_index" } }));
-export const getProjectBySlug  = cache((slug: string) => fetchOne("projects",  "slug", slug));
-export const getServices    = cache(() => fetchRows("services",     { order: { column: "id" } }));
-export const getServiceBySlug  = cache((slug: string) => fetchOne("services",  "slug", slug));
-export const getSolutions   = cache(() => fetchRows("solutions",    { order: { column: "id" } }));
-export const getSolutionBySlug = cache((slug: string) => fetchOne("solutions", "slug", slug));
-export const getPosts       = cache(() => fetchRows("posts",        { filter: { published: true }, order: { column: "published_at", ascending: false } }));
-export const getPostBySlug  = cache((slug: string) => fetchOne("posts",     "slug", slug));
-export const getTeamMembers = cache(() => fetchRows("team_members", { order: { column: "order_index" } }));
-export const getFaqs        = cache(() => fetchRows("faqs",         { order: { column: "order_index" } }));
+import { 
+  FALLBACK_PROJECTS, 
+  FALLBACK_SERVICES, 
+  FALLBACK_SOLUTIONS, 
+  FALLBACK_POSTS, 
+  FALLBACK_TEAM, 
+  FALLBACK_FAQS 
+} from "./fallback";
+
+export const getProjects = cache(async () => {
+  const rows = await fetchRows("projects", { filter: { published: true }, order: { column: "order_index" } });
+  return rows.length > 0 ? rows : (FALLBACK_PROJECTS as unknown as DataRow[]);
+});
+export const getProjectBySlug = cache(async (slug: string) => {
+  const row = await fetchOne("projects", "slug", slug);
+  return row || (FALLBACK_PROJECTS.find(x => x.slug === slug) as unknown as DataRow) || null;
+});
+export const getServices = cache(async () => {
+  const rows = await fetchRows("services", { order: { column: "id" } });
+  return rows.length > 0 ? rows : (FALLBACK_SERVICES as unknown as DataRow[]);
+});
+export const getServiceBySlug = cache(async (slug: string) => {
+  const row = await fetchOne("services", "slug", slug);
+  return row || (FALLBACK_SERVICES.find(x => x.slug === slug) as unknown as DataRow) || null;
+});
+export const getSolutions = cache(async () => {
+  const rows = await fetchRows("solutions", { order: { column: "id" } });
+  return rows.length > 0 ? rows : (FALLBACK_SOLUTIONS as unknown as DataRow[]);
+});
+export const getSolutionBySlug = cache(async (slug: string) => {
+  const row = await fetchOne("solutions", "slug", slug);
+  return row || (FALLBACK_SOLUTIONS.find(x => x.slug === slug) as unknown as DataRow) || null;
+});
+export const getPosts = cache(async () => {
+  const rows = await fetchRows("posts", { filter: { published: true }, order: { column: "published_at", ascending: false } });
+  return rows.length > 0 ? rows : (FALLBACK_POSTS as unknown as DataRow[]);
+});
+export const getPostBySlug = cache(async (slug: string) => {
+  const row = await fetchOne("posts", "slug", slug);
+  return row || (FALLBACK_POSTS.find(x => x.slug === slug) as unknown as DataRow) || null;
+});
+export const getTeamMembers = cache(async () => {
+  const members = await fetchRows("team", { order: { column: "order_index" } });
+  return members.length > 0 ? members : (FALLBACK_TEAM as unknown as DataRow[]);
+});
+export const getFaqs = cache(async () => {
+  const rows = await fetchRows("faqs", { order: { column: "order_index" } });
+  return rows.length > 0 ? rows : (FALLBACK_FAQS as unknown as DataRow[]);
+});

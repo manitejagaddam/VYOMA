@@ -2,6 +2,7 @@
 /** pages/Home.jsx */
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
 import { Link } from "@/components/shared/Link";
@@ -118,6 +119,7 @@ function CapabilitySnapshot() {
 }
 
 function SelectedWork({ projects = [] }) {
+  const router = useRouter();
   const selected = projects.slice(0, 4);
 
   const carouselCards = selected.map((p, index) => (
@@ -134,7 +136,7 @@ function SelectedWork({ projects = [] }) {
               {p.excerpt || `Exploring the technical and design journey of ${p.title}.`}
             </p>
             <div className="flex justify-center">
-              <Btn onClick={() => { document.body.style.overflow = "auto"; window.location.href = `/work/${p.slug}`; }} variant="primary">Read Case Study</Btn>
+              <Btn onClick={() => { document.body.style.overflow = "auto"; router.push(`/work/${p.slug}`); }} variant="primary">Read Case Study</Btn>
             </div>
           </div>
         )

@@ -572,7 +572,7 @@ export function Admin({}) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEditingItem(null);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setIsCreating(false);
   }, [activeTab]);
 

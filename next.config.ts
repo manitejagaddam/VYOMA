@@ -14,6 +14,19 @@ const nextConfig: NextConfig = {
     VYOMA_DB_URL: process.env.VYOMA_DB_URL,
     VYOMA_DB_KEY: process.env.VYOMA_DB_KEY,
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

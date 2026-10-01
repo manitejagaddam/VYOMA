@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 export default async function SolutionsPage() {
   const solutions = await getSolutions();
-  return <Solutions initialSolutions={solutions} />;
+  return <Solutions initialSolutions={solutions as any} />;
 }

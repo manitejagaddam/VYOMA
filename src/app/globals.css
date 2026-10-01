@@ -1707,3 +1707,11 @@ html {
 }
 
 .megamenu-dock { position: relative !important; top: auto !important; left: auto !important; transform: none !important; width: 100% !important; box-shadow: none !important; border: none !important; background: transparent !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

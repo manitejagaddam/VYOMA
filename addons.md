@@ -1,102 +1,42 @@
-# VYOMA — Addons & Pending Configuration
+# VYOMA Backlog & Add-ons
 
-> Items marked ✅ are done. Items marked ⏳ require your input or will be configured later.
+This file tracks features and fixes that were identified during the second-pass audit but deferred so you can implement them later at your convenience.
 
----
+## 1. Supabase RLS (Row Level Security) Verification
+Currently, the `/admin` route relies solely on client-side protection. To ensure the database is secure against unauthorized access from anyone who finds the Supabase URL, you must enable RLS directly in the Supabase dashboard:
+- Log in to your Supabase project.
+- Go to **Authentication** > **Policies** (or Database > Tables).
+- Ensure RLS is active for tables like `leads` and `subscribers`.
+- Set policies (e.g., `insert` for anonymous users, `select`/`update`/`delete` restricted to authenticated admins).
 
-## Analytics
-| Item | Status | Notes |
-|------|--------|-------|
-| Vercel Analytics | ✅ Installed | `@vercel/analytics` added to layout. Enable in Vercel dashboard → Analytics tab. |
-| Vercel Speed Insights | ✅ Installed | `@vercel/speed-insights` added to layout. |
-| Configure analytics | ⏳ You | Go to vercel.com → your project → Analytics → Enable |
+## 2. Cloudflare Turnstile Integration (Anti-Spam)
+The contact form currently uses a simple CSS-hidden honeypot field. For robust protection against automated bot submissions, integrate Cloudflare Turnstile:
+- Register your domain at Cloudflare Turnstile and obtain a Site Key and Secret Key.
+- Add them to `.env`.
+- Use the `@marsidev/react-turnstile` package on the client to render the widget and pass the token to your backend/Supabase.
 
----
+## 3. Edge Middleware for Route Protection
+To prevent unauthenticated users from even downloading the `/admin` React bundle, you should add a `middleware.ts` file at the root:
+- Use `@supabase/ssr` to check the session edge-side.
+- Redirect unauthenticated requests to `/admin/login` before they hit the page component.
 
-## Domain
-| Item | Status | Notes |
-|------|--------|-------|
-| Domain | ⏳ Confirm | Domain is `vyoma.world`. Update DNS A/CNAME to point to Vercel. |
-| SSL/TLS | ✅ Auto | Vercel auto-provisions Let's Encrypt certificate. |
+## 4. Sentry Error Monitoring
+Add Sentry to track runtime errors and unhandled exceptions:
+- Run `npx @sentry/wizard@latest -i nextjs`.
+- This will wrap your Next.js config and create instrumentation hooks.
 
----
+## 5. Setup `.env.example`
+Provide an example `.env` file so other developers (or CI/CD pipelines) know what environment variables are required:
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-## Email / Contact
-| Item | Status | Notes |
-|------|--------|-------|
-| Support email | ✅ Updated | All references now use `support@vyoma.world` |
-| WhatsApp link | ⏳ You | Replace `XXXXXXXXXX` in `FloatingContactDock.jsx` with your actual number (digits only, with country code, e.g. `919876543210`) |
-| Phone number | ⏳ You | Add your phone number to `Contact.jsx` when ready |
-
----
-
-## Error Monitoring
-| Item | Status | Notes |
-|------|--------|-------|
-| Sentry | ⏳ Configure later | Run `npx @sentry/wizard@latest -i nextjs` when ready to add error tracking |
-| Uptime monitoring | ⏳ Configure later | Recommended: [Better Uptime](https://betteruptime.com) or [UptimeRobot](https://uptimerobot.com) — free tier sufficient |
-
----
-
-## CI/CD
-| Item | Status | Notes |
-|------|--------|-------|
-| GitHub Actions | ⏳ Configure later | Add `.github/workflows/ci.yml` — see template below |
-| Vercel preview deployments | ⏳ You | Enable in Vercel dashboard → Settings → Git |
-
-### CI/CD Template (save as `.github/workflows/ci.yml`)
-```yaml
-name: CI
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npm run lint
+# (Optional) Cloudflare Turnstile
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
 ```
 
----
-
-## Images
-| Item | Status | Notes |
-|------|--------|-------|
-| Replace all `<img>` with `next/image` | ✅ Done | All views and components updated |
-| OG image | ⏳ You | Replace `/public/og-image.png` with a 1200×630 `.webp`. Place at `public/og-image.webp` and update `layout.tsx` reference. |
-| Local asset PNGs → WebP | ⏳ You | You said you'll provide `.webp` versions. Replace files in `public/assets/`. All `next/image` calls will pick them up automatically. |
-| Favicons | ✅ Fixed | Regenerated: 16×16 (948 B), 32×32 (2.6 KB), 180×180 apple-touch (44 KB). Down from 409 KB each. |
-
----
-
-## Privacy & Legal
-| Item | Status | Notes |
-|------|--------|-------|
-| Cookie consent banner | ✅ Added | Shows on first visit, stores choice in localStorage |
-| Privacy Policy | ⏳ You | `/privacy` page has placeholder content. Replace with real policy. |
-| Terms of Service | ⏳ You | `/terms` page has placeholder content. Replace with real terms. |
-
----
-
-## Security (all done)
-| Item | Status |
-|------|--------|
-| Security headers (CSP, HSTS, X-Frame, etc.) | ✅ Done via `src/proxy.ts` |
-| Supabase key leak removed from `next.config.ts` (handled differently now) | ✅ Fixed |
-| Env vars renamed to avoid framework prefixes | ✅ Fixed |
-| Static `robots.txt` / `sitemap.xml` shadowing dynamic routes | ✅ Deleted |
-
----
-
-## When You Have Assets
-Drop `.webp` files into `public/assets/` with the same names as the current `.png` files.
-Next.js `next/image` will automatically serve them via the Vercel CDN with the right `sizes` hints.
+## 6. Cleanup Remaining Warnings
+- Remove any remaining unused variables flagged by ESLint (e.g., `BELIEFS` in `About.jsx`, unused variables in `Admin.jsx`).
+- Remove `console.log` statements in production files.

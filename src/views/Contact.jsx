@@ -2,11 +2,12 @@
 /** pages/Contact.jsx — Sends inquiry to Supabase `leads` table.
  *  Supports ?service= query param for dynamic pre-fill from service/solution pages.
  */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
-
+import { Turnstile } from "@marsidev/react-turnstile";
+import { submitContactForm } from "@/app/actions";
 // Maps URL ?service= slug → { label, need, description, placeholders }
 const SERVICE_CONTEXT = {
   "web-development": {
@@ -118,18 +119,7 @@ const DEFAULT_PLACEHOLDERS = [
   "How do we transition to a multi-agent AI system?",
 ];
 
-const WHATSAPP_NUMBER = "919494785078";
 
-function buildWhatsAppUrl(service = null, name = "") {
-  let msg = "";
-  if (service && SERVICE_CONTEXT[service]) {
-    const ctx = SERVICE_CONTEXT[service];
-    msg = `Hi VYOMA 👋 I'm interested in your ${ctx.label} services. I'd love to discuss a project — could we connect?`;
-  } else {
-    msg = "Hi VYOMA 👋 I'd like to discuss a project. Could we connect?";
-  }
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-}
 
 export function Contact() {
   const searchParams = useSearchParams();
@@ -140,20 +130,7 @@ export function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Controlled value for the `need` select — pre-selected from context
-  const [needValue, setNeedValue] = useState(ctx?.need || "");
-  const [descValue, setDescValue] = useState(ctx?.description || "");
 
-  // Keep in sync if URL param changes
-  useEffect(() => {
-    if (ctx) {
-      setNeedValue(ctx.need);
-      setDescValue(ctx.description);
-    } else {
-      setNeedValue("");
-      setDescValue("");
-    }
-  }, [serviceSlug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -182,20 +159,17 @@ export function Contact() {
     };
 
     try {
-      if (supabase) {
-        const { error: dbErr } = await supabase.from("leads").insert([lead]);
-        if (dbErr) throw dbErr;
-      }
+      await submitContactForm(fd, window.turnstileToken || null);
       setSent(true);
     } catch (err) {
       console.error("[VYOMA] Lead submission error:", err.message);
-      setError("Something went wrong submitting your inquiry. Please email us directly at support@vyoma.world");
+      setError(err.message || "Something went wrong submitting your inquiry. Please email us directly at support@vyoma.world");
     } finally {
       setSubmitting(false);
     }
   }
 
-  const waUrl = buildWhatsAppUrl(serviceSlug);
+
 
   return (
     <section className="contact-page">
@@ -242,7 +216,7 @@ export function Contact() {
           </div>
 
           {/* ─── FORM ───────────────────────────────────── */}
-          <form className="contact-form" onSubmit={handleSubmit}>
+          <form key={serviceSlug || "form"} className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <label htmlFor="contact-name">Your name<input id="contact-name" name="name" required placeholder="Name" /></label>
               <label htmlFor="contact-email">Work email<input id="contact-email" name="email" required type="email" placeholder="you@company.com" /></label>
@@ -258,8 +232,7 @@ export function Contact() {
               <select
                 name="need"
                 required
-                value={needValue}
-                onChange={e => setNeedValue(e.target.value)}
+                defaultValue={ctx?.need || ""}
               >
                 <option value="" disabled>Select a focus</option>
                 {["Website or web application","Mobile application","AI or GenAI solution","Chatbot or conversational AI","SaaS or custom software","UI/UX and product design","Automation or integrations","Other"].map(o => <option key={o}>{o}</option>)}
@@ -293,12 +266,24 @@ export function Contact() {
               <PlaceholdersAndVanishInput
                 key={serviceSlug}
                 name="description"
-                initialValue={descValue}
+                initialValue={ctx?.description || ""}
                 placeholders={ctx?.placeholders || DEFAULT_PLACEHOLDERS}
               />
             </div>
 
-            {error && <p style={{ color: "var(--accent-warm)", fontSize: 13 }}>Something went wrong. Please try again.</p>}
+            {error && <p style={{ color: "var(--accent-warm)", fontSize: 13 }}>{error}</p>}
+
+            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+              <div className="mb-4">
+                <Turnstile 
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} 
+                  onSuccess={(token) => {
+                    // Quick way to pass token without needing state which would trigger re-renders
+                    window.turnstileToken = token;
+                  }}
+                />
+              </div>
+            )}
 
             <div className="form-footer">
               <span>NDAs available on request. Replies within one business day.</span>
