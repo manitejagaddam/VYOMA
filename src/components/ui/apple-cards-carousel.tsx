@@ -176,7 +176,7 @@ const BackgroundImagePreloader = ({ items }: { items: unknown[] }) => {
       {imagesToPreload.map((src, i) => (
         // Because of the exact sizes string matching, this triggers Next.js to fetch 
         // and cache the exact same optimized image URL that the cards will use.
-        <BlurImage key={i} src={src} priority={true} alt="preload" />
+        <BlurImage key={i} src={src as string} priority={true} alt="preload" />
       ))}
     </div>
   );

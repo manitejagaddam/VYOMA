@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 export default async function WorkPage() {
   const projects = await getProjects();
-  return <Work initialProjects={projects as Record<string, unknown>[]} />;
+  return <Work initialProjects={projects as never[]} />;
 }
