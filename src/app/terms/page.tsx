@@ -24,7 +24,7 @@ export default function TermsPage() {
       <p>We reserve the right to modify these Terms of Service at any time. Any changes will be effective immediately upon posting on this page. Your continued use of the website following any changes constitutes acceptance of the new terms.</p>
 
       <h2>7. Contact Information</h2>
-      <p>If you have any questions regarding these Terms of Service, please contact us at support@vyoma.world.</p>
+      <p>If you have any questions regarding these Terms of Service, please contact us at vyoma1107@gmail.com.</p>
     </Legal>
   );
 }

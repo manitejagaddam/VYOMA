@@ -171,7 +171,7 @@ export function Contact() {
       setSent(true);
     } catch (err) {
       console.error("[VYOMA] Lead submission error:", err.message);
-      setError(err.message || "Something went wrong submitting your inquiry. Please email us directly at support@vyoma.world");
+      setError(err.message || "Something went wrong submitting your inquiry. Please email us directly at vyoma1107@gmail.com");
     } finally {
       setSubmitting(false);
     }
@@ -210,7 +210,7 @@ export function Contact() {
 
             <div className="contact-info-list">
               {[
-                ["Email",         <a href="mailto:support@vyoma.world" key="e">support@vyoma.world</a>],
+                ["Email",         <a href="mailto:vyoma1107@gmail.com" key="e">vyoma1107@gmail.com</a>],
                 ["Discovery call",<strong key="d">Available — just reach out</strong>],
                 ["Location",      <strong key="l">Working globally</strong>],
                 ["Response time", <strong key="r">Within one business day</strong>],

@@ -6,7 +6,7 @@
   
   <p>
     <a href="https://vyoma.world">vyoma.world</a> • 
-    <a href="mailto:support@vyoma.world">support@vyoma.world</a>
+    <a href="mailto:vyoma1107@gmail.com">vyoma1107@gmail.com</a>
   </p>
 </div>
 
@@ -51,4 +51,4 @@ A few of the problems we've solved recently:
 Have a project in mind? We'd love to discuss how we can help bring it to life.
 
 - 🌐 **Website:** [vyoma.world](https://vyoma.world)
-- ✉️ **Email:** [support@vyoma.world](mailto:support@vyoma.world)
+- ✉️ **Email:** [vyoma1107@gmail.com](mailto:vyoma1107@gmail.com)

@@ -69,7 +69,7 @@ export function Footer() {
         <Link href="/privacy">Privacy Policy</Link>
         <div className="footer-bottom-info">
           <p>© {new Date().getFullYear()} VYOMA Technologies</p>
-          <a href="mailto:support@vyoma.world" className="hover:underline">support@vyoma.world</a>
+          <a href="mailto:vyoma1107@gmail.com" className="hover:underline">vyoma1107@gmail.com</a>
         </div>
       </div>
     </footer>

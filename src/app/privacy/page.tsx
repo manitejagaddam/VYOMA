@@ -62,7 +62,7 @@ export default function PrivacyPage() {
         <li>Withdraw your consent</li>
         <li>Raise a grievance about how we handle your data</li>
       </ul>
-      <p>To exercise any of these rights, email <a href="mailto:support@vyoma.world">support@vyoma.world</a>. We aim to respond within [30] days.</p>
+      <p>To exercise any of these rights, email <a href="mailto:vyoma1107@gmail.com">vyoma1107@gmail.com</a>. We aim to respond within [30] days.</p>
 
       <h2>Children&apos;s Privacy</h2>
       <p>Our services are intended for businesses and adults. We do not knowingly collect personal data from children under 18. If you believe a child has submitted data to us, contact us and we will delete it.</p>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
       <h2>Contact Us</h2>
       <p>
         Questions or requests about this policy? Reach us at{" "}
-        <a href="mailto:support@vyoma.world">support@vyoma.world</a>.
+        <a href="mailto:vyoma1107@gmail.com">vyoma1107@gmail.com</a>.
         [Add registered business name and address if applicable.]
       </p>
     </Legal>

@@ -111,7 +111,7 @@ const jsonLd = {
       "@id": "https://vyoma.world/#organization",
       name: "VYOMA",
       url: "https://vyoma.world",
-      email: "support@vyoma.world",
+      email: "vyoma1107@gmail.com",
       logo: {
         "@type": "ImageObject",
         url: "https://vyoma.world/assets/Logo.webp",
@@ -131,7 +131,7 @@ const jsonLd = {
       "@id": "https://vyoma.world/#service",
       name: "VYOMA",
       url: "https://vyoma.world",
-      email: "support@vyoma.world",
+      email: "vyoma1107@gmail.com",
       description: "Custom software, product design, and AI engineering agency for startups and businesses.",
       areaServed: "Worldwide",
       serviceType: [

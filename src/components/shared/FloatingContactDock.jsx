@@ -15,7 +15,7 @@ export function FloatingContactDock() {
       icon: (
         <IconMail className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "mailto:support@vyoma.world",
+      href: "mailto:vyoma1107@gmail.com",
     },
     {
       title: "WhatsApp",
