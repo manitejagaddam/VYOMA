@@ -151,7 +151,35 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
           </button>
         </div>
       </div>
+      <BackgroundImagePreloader items={items} />
     </CarouselContext.Provider>
+  );
+};
+
+const BackgroundImagePreloader = ({ items }: { items: any[] }) => {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    // Fetch all remaining images silently 1.5s after page mounts
+    // so we do not block the initial page render
+    const timer = setTimeout(() => setMounted(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!mounted) return null;
+
+  const imagesToPreload = items
+    .map((item) => item?.props?.card?.src)
+    .filter(Boolean);
+
+  return (
+    <div className="absolute w-[1px] h-[1px] overflow-hidden opacity-0 pointer-events-none z-[-1]" aria-hidden="true">
+      {imagesToPreload.map((src, i) => (
+        // Because of the exact sizes string matching, this triggers Next.js to fetch 
+        // and cache the exact same optimized image URL that the cards will use.
+        <BlurImage key={i} src={src} priority={true} alt="preload" />
+      ))}
+    </div>
   );
 };
 
@@ -191,7 +219,7 @@ export const Card = ({
     }
 
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => { window.removeEventListener('keydown', onKeyDown); document.body.style.overflow = 'auto'; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -217,25 +245,33 @@ export const Card = ({
               className="relative z-[60] mx-auto my-10 h-fit max-w-5xl rounded-3xl bg-white p-4 font-sans md:p-10 dark:bg-neutral-900"
             >
               <button
-                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
+                className="absolute top-6 right-6 md:top-8 md:right-8 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 hover:bg-black/80 dark:bg-white/20 dark:hover:bg-white/40 backdrop-blur-sm z-50 transition-colors"
                 onClick={handleClose}
                 aria-label="Close"
               >
-                <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
+                <IconX className="h-5 w-5 text-white dark:text-white" />
               </button>
-              <motion.p
-                layoutId={layout ? `category-${card.title}` : undefined}
-                className="text-base font-medium text-black dark:text-white"
-              >
-                {card.category}
-              </motion.p>
-              <motion.p
-                layoutId={layout ? `title-${card.title}` : undefined}
-                className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
-              >
-                {card.title}
-              </motion.p>
-              <div className="py-10">{card.content}</div>
+
+              <div className="text-center px-4 md:px-12 pt-4 md:pt-8">
+                <motion.p
+                  layoutId={layout ? `category-${card.category}` : undefined}
+                  className="text-sm md:text-base font-medium text-neutral-500 dark:text-neutral-400 mb-4 uppercase tracking-widest"
+                >
+                  {card.category}
+                </motion.p>
+                <motion.p
+                  layoutId={layout ? `title-${card.title}` : undefined}
+                  className="text-3xl md:text-5xl font-bold text-neutral-800 dark:text-white tracking-tight leading-tight"
+                >
+                  {card.title}
+                </motion.p>
+              </div>
+
+              <div className="w-full max-w-4xl mx-auto mt-10 md:mt-14 mb-8 h-[250px] md:h-[400px] relative rounded-3xl overflow-hidden shadow-2xl">
+                <BlurImage src={card.src} alt={card.title} className="object-cover" />
+              </div>
+
+              <div className="pb-10 max-w-4xl mx-auto">{card.content}</div>
             </motion.div>
           </div>
         )}
@@ -243,28 +279,30 @@ export const Card = ({
       <motion.button
         layoutId={layout ? `card-${card.title}` : undefined}
         onClick={handleOpen}
-        className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900"
+        className="relative z-10 flex h-[28rem] w-80 flex-col items-start justify-start overflow-hidden rounded-xl bg-white md:h-[32rem] md:w-96 dark:bg-[#0a0b0f] border border-black/10 dark:border-white/10 p-6 md:p-8 group hover:border-black/20 dark:hover:border-white/20 transition-all text-left"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-        <div className="relative z-40 p-8">
+        <div className="relative w-full h-48 md:h-52 rounded-xl overflow-hidden mb-6 shrink-0 shadow-sm dark:shadow-none">
+          <BlurImage
+            src={card.src}
+            alt={card.title}
+            priority={index < 3}
+            className="absolute inset-0 object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+        <div className="flex flex-col flex-grow w-full">
           <motion.p
             layoutId={layout ? `category-${card.category}` : undefined}
-            className="text-left font-sans text-sm font-medium text-white md:text-base"
+            className="text-left font-sans text-xs md:text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest"
           >
             {card.category}
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${card.title}` : undefined}
-            className="mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl"
+            className="text-left font-sans text-xl md:text-2xl font-bold text-neutral-800 dark:text-neutral-100 line-clamp-3 leading-snug"
           >
             {card.title}
           </motion.p>
         </div>
-        <BlurImage
-          src={card.src}
-          alt={card.title}
-          className="absolute inset-0 z-10 object-cover"
-        />
       </motion.button>
     </>
   );
@@ -276,9 +314,12 @@ export const BlurImage = ({
   src,
   className,
   alt,
+  priority,
   ...rest
-}: React.ImgHTMLAttributes<HTMLImageElement>) => {
+}: React.ComponentProps<typeof Image>) => {
   const [isLoading, setLoading] = useState(true);
+  if (!src || typeof src !== "string") return <div className={cn("h-full w-full bg-neutral-200 dark:bg-neutral-800", className)} />;
+  const isFill = !width && !height;
   return (
     <Image
       className={cn(
@@ -288,13 +329,21 @@ export const BlurImage = ({
       )}
       onLoad={() => setLoading(false)}
       src={src as string}
-      width={width}
-      height={height}
-      loading="lazy"
+      loading={priority ? undefined : "lazy"}
+      priority={priority}
       decoding="async"
       alt={alt ? alt : "Background of a beautiful view"}
+      {...(isFill ? { fill: true, sizes: "(max-width: 768px) 100vw, 50vw" } : { width, height })}
       {...rest}
     />
   );
 };
+
+
+
+
+
+
+
+
 

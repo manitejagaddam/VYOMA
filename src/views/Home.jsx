@@ -130,7 +130,7 @@ function SelectedWork({}) {
       key={p.slug} 
       index={index}
       card={{
-        src: p.cover_image,
+        src: p.image_url || "/assets/placeholder.jpg",
         category: p.client,
         title: p.title,
         content: (
@@ -139,7 +139,7 @@ function SelectedWork({}) {
               {p.excerpt || `Exploring the technical and design journey of ${p.title}.`}
             </p>
             <div className="flex justify-center">
-              <Btn to={`/work/${p.slug}`} variant="primary">Read Case Study</Btn>
+              <Btn onClick={() => { document.body.style.overflow = "auto"; window.location.href = `/work/${p.slug}`; }} variant="primary">Read Case Study</Btn>
             </div>
           </div>
         )

@@ -1,5 +1,6 @@
 "use client";
 /** pages/CaseStudy.jsx — Uses exact DB column names */
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { SectionKicker } from "@/components/shared/SectionKicker";
 import { Btn } from "@/components/shared/Btn";
@@ -33,7 +34,26 @@ export function CaseStudy({ project }) {
   if (!project) return <NotFound />;
 
   const heroImage = project.banner_url || project.image_url;
-  const stack = project.tags || []; // DB stores stack as `tags`
+  const stack = project.tags || [];
+
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (lightboxIndex === null) return;
+      if (e.key === "Escape") setLightboxIndex(null);
+      if (e.key === "ArrowRight") setLightboxIndex((prev) => (prev + 1) % (project.gallery_urls?.length || 1));
+      if (e.key === "ArrowLeft") setLightboxIndex((prev) => (prev - 1 + (project.gallery_urls?.length || 1)) % (project.gallery_urls?.length || 1));
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxIndex, project.gallery_urls]);
+
+  useEffect(() => {
+    if (lightboxIndex !== null) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "auto";
+    return () => { document.body.style.overflow = "auto"; };
+  }, [lightboxIndex]);
 
   return (
     <>
@@ -56,7 +76,7 @@ export function CaseStudy({ project }) {
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-outline"
-                style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px", color: "var(--accent-2)", borderColor: "var(--accent-2)" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px" }}
               >
                 View Live Project ↗
               </a>
@@ -102,11 +122,57 @@ export function CaseStudy({ project }) {
           <SectionKicker left="Gallery" right="Visuals" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px", marginTop: "40px" }}>
             {project.gallery_urls.map((url, i) => (
-              <figure key={i} className="relative min-h-[240px] rounded-xl overflow-hidden" style={{ margin: 0, background: "var(--surface-2)", border: "1px solid var(--border)" }}>
-                <Image src={url} alt={`${project.title} screenshot ${i + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+              <figure key={i} onClick={() => setLightboxIndex(i)} className="relative min-h-[240px] rounded-xl overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" style={{ margin: 0, background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+                <Image src={url} alt={`${project.title} screenshot ${i + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover pointer-events-none" />
               </figure>
             ))}
           </div>
+          
+          {lightboxIndex !== null && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
+              <button 
+                className="absolute top-6 right-6 text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+                onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }}
+                style={{ border: "1px solid rgba(255,255,255,0.2)" }}
+              >
+                ✕
+              </button>
+              
+              {project.gallery_urls.length > 1 && (
+                <>
+                  <button 
+                    className="absolute left-4 md:left-10 text-white bg-white/10 hover:bg-white/20 rounded-full w-12 h-12 flex items-center justify-center transition-colors text-xl z-50"
+                    onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + project.gallery_urls.length) % project.gallery_urls.length); }}
+                    style={{ border: "1px solid rgba(255,255,255,0.2)" }}
+                  >
+                    ←
+                  </button>
+                  <button 
+                    className="absolute right-4 md:right-10 text-white bg-white/10 hover:bg-white/20 rounded-full w-12 h-12 flex items-center justify-center transition-colors text-xl z-50"
+                    onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % project.gallery_urls.length); }}
+                    style={{ border: "1px solid rgba(255,255,255,0.2)" }}
+                  >
+                    →
+                  </button>
+                </>
+              )}
+              
+              <div className="relative w-full max-w-6xl max-h-[85vh] h-[85vh] mx-4 md:mx-20 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                <Image 
+                  src={project.gallery_urls[lightboxIndex]} 
+                  alt={`${project.title} gallery full`} 
+                  fill 
+                  className="object-contain" 
+                  sizes="100vw"
+                  quality={100}
+                />
+              </div>
+              
+              <div className="absolute bottom-6 left-0 right-0 text-center text-white/70 font-mono text-sm">
+                {lightboxIndex + 1} / {project.gallery_urls.length}
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -136,5 +202,8 @@ export function CaseStudy({ project }) {
     </>
   );
 }
+
+
+
 
 
