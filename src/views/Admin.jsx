@@ -9,6 +9,8 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { invalidateCache } from "@/hooks/useData";
 import { useRouter } from "next/navigation";
+import { SortableList } from "@/components/admin/SortableList";
+import { AdminToast } from "@/components/admin/AdminToast";
 
 /* ── Schema definition: what fields appear in each table's edit form ── */
 const SCHEMAS = {
@@ -45,6 +47,7 @@ const SCHEMAS = {
     { key: "published",   label: "Published",     type: "boolean" },
   ],
   services: [
+    { key: "order_index",  label: "Order",         type: "number", placeholder: "e.g., 1" },
     { key: "slug",         label: "Slug",          type: "text", placeholder: "e.g., product-design" },
     { key: "no",           label: "Number",        type: "text", placeholder: "e.g., 01" },
     { key: "title",        label: "Title",         type: "text", placeholder: "e.g., Product Design" },
@@ -55,6 +58,7 @@ const SCHEMAS = {
     { key: "image_url",    label: "Image",         type: "image" },
   ],
   solutions: [
+    { key: "order_index",  label: "Order",     type: "number", placeholder: "e.g., 1" },
     { key: "slug",      label: "Slug",      type: "text", placeholder: "e.g., custom-crm" },
     { key: "no",        label: "Number",    type: "text", placeholder: "e.g., 01" },
     { key: "title",     label: "Title",     type: "text", placeholder: "e.g., Custom CRM" },
@@ -65,6 +69,7 @@ const SCHEMAS = {
     { key: "image_url", label: "Image",     type: "image" },
   ],
   posts: [
+    { key: "order_index",  label: "Order",         type: "number", placeholder: "e.g., 1" },
     { key: "slug",         label: "Slug",          type: "text", placeholder: "e.g., the-future-of-ai" },
     { key: "title",        label: "Title",         type: "text", placeholder: "e.g., The Future of AI" },
     { key: "tag",          label: "Tag",           type: "text", placeholder: "e.g., Intelligence" },
@@ -503,6 +508,18 @@ function EditDrawer({ table, item, onClose, onSaved }) {
           try { payload[k] = JSON.parse(payload[k]); } catch (e) {}
         }
       });
+
+      // Auto-assign max(order_index) + 1 for new records so they land at the bottom
+      if (isNew && table !== "leads" && (payload.order_index === undefined || payload.order_index === null || payload.order_index === "")) {
+        const { data: maxRows } = await supabase
+          .from(table)
+          .select("order_index")
+          .order("order_index", { ascending: false })
+          .limit(1);
+        const maxOrder = maxRows?.[0]?.order_index || 0;
+        payload.order_index = maxOrder + 1;
+      }
+
       const { error } = await supabase.from(table).upsert(payload);
       if (error) throw error;
       invalidateCache(table);
@@ -560,7 +577,10 @@ export function Admin({}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  
+  const [toast, setToast] = useState(null);
+  const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -579,18 +599,30 @@ export function Admin({}) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEditingItem(null);
-     
-    ;
+    setSearchQuery("");
+    setSelectedCategory("ALL");
   }, [activeTab]);
 
   async function fetchData() {
     setLoading(true);
     try {
-      const { data: rows, error } = await supabase.from(activeTab).select("*").order("id", { ascending: true });
+      let query = supabase.from(activeTab).select("*");
+      if (activeTab === "leads") {
+        query = query.order("id", { ascending: false });
+      } else {
+        query = query.order("order_index", { ascending: true });
+      }
+      let { data: rows, error } = await query;
+      // If table doesn't have order_index column yet (pending migration), fallback to id
+      if (error && (error.message?.includes("order_index") || error.code === "42703")) {
+        const fallbackRes = await supabase.from(activeTab).select("*").order("id", { ascending: true });
+        rows = fallbackRes.data;
+        error = fallbackRes.error;
+      }
       if (error) throw error;
       setData(rows || []);
     } catch (err) {
-      alert("Error fetching data: " + err.message);
+      setToast({ type: "error", message: "Error fetching data: " + err.message });
     } finally {
       setLoading(false);
     }
@@ -599,17 +631,59 @@ export function Admin({}) {
   async function handleDelete(id, label) {
     if (!confirm(`Delete "${label}"? This cannot be undone.`)) return;
     const { error } = await supabase.from(activeTab).delete().eq("id", id);
-    if (error) alert("Delete failed: " + error.message);
-    else { invalidateCache(activeTab); fetchData(); }
+    if (error) setToast({ type: "error", message: "Delete failed: " + error.message });
+    else {
+      invalidateCache(activeTab);
+      setToast({ type: "success", message: `Deleted "${label}"` });
+      fetchData();
+    }
+  }
+
+  async function handleReorder(newItems, newIds) {
+    const previousItems = [...data];
+    // Optimistically update order_index numbers so badges update immediately
+    const optimisticItems = newItems.map((item, idx) => ({
+      ...item,
+      order_index: idx + 1,
+    }));
+    setData(optimisticItems);
+    setIsSavingOrder(true);
+    setToast({ type: "info", message: "Saving new order to database…" });
+
+    try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const token = currentSession?.access_token;
+
+      const res = await fetch(`/api/admin/reorder/${activeTab}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ ids: newIds }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || json.error) {
+        throw new Error(json.error || "Failed to update order");
+      }
+
+      invalidateCache(activeTab);
+      setToast({ type: "success", message: `Order updated successfully for ${activeTab}!` });
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      setData(previousItems);
+      setToast({ type: "error", message: `Reorder failed: ${err.message}` });
+    } finally {
+      setIsSavingOrder(false);
+    }
   }
 
   function openCreate() {
-    ;
     setEditingItem({});
   }
 
   function openEdit(item) {
-    ;
     setEditingItem(item);
   }
 
@@ -622,6 +696,34 @@ export function Admin({}) {
   }
 
   const itemLabel = (item) => item.title || item.name || item.question || item.slug || `ID ${item.id}`;
+
+  // Extract categories for grouped tabs (faqs, team)
+  const categories = (() => {
+    if (activeTab !== "faqs" && activeTab !== "team") return [];
+    const set = new Set();
+    data.forEach(item => {
+      if (item.category) set.add(item.category);
+    });
+    return Array.from(set);
+  })();
+
+  // Filter items by category & search query
+  const filteredData = data.filter(item => {
+    if (selectedCategory !== "ALL" && item.category !== selectedCategory) {
+      return false;
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const label = itemLabel(item).toLowerCase();
+      const slug = (item.slug || "").toLowerCase();
+      const idStr = String(item.id);
+      const email = (item.email || "").toLowerCase();
+      if (!label.includes(q) && !slug.includes(q) && !idStr.includes(q) && !email.includes(q)) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   return (
     <div style={S.page}>
@@ -655,15 +757,80 @@ export function Admin({}) {
             {/* Card Header */}
             <div style={S.cardHeader}>
               <div>
-                <div style={S.cardTitle} className="capitalize">{activeTab}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={S.cardTitle} className="capitalize">{activeTab}</div>
+                  {activeTab !== "leads" && (
+                    <span style={{ fontSize: "11px", color: "#616b80", background: "rgba(255,255,255,0.04)", padding: "2px 8px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.08)", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <span>⋮⋮</span> <span>Drag handle to reorder</span>
+                    </span>
+                  )}
+                </div>
                 <div style={{ fontSize: "12px", color: "#4a5364", marginTop: "2px" }}>
                   {loading ? "Loading…" : `${data.length} record${data.length !== 1 ? "s" : ""}`}
                 </div>
               </div>
-              <button onClick={openCreate} style={S.btnPrimary}>+ New {activeTab.replace(/s$/, "")}</button>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <input
+                  type="text"
+                  placeholder={`Search ${activeTab}…`}
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  style={{
+                    padding: "6px 12px",
+                    background: "#0a0b0f",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "6px",
+                    color: "#eef0f5",
+                    fontSize: "13px",
+                    outline: "none",
+                    width: "180px",
+                  }}
+                />
+                <button onClick={openCreate} style={S.btnPrimary}>+ New {activeTab.replace(/s$/, "")}</button>
+              </div>
             </div>
 
-            {/* Table */}
+            {/* Category Filter Pills (faqs, team) */}
+            {categories.length > 0 && (
+              <div style={{ display: "flex", gap: "6px", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.01)", overflowX: "auto" }}>
+                <button
+                  onClick={() => setSelectedCategory("ALL")}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                    border: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    background: selectedCategory === "ALL" ? "rgba(79,124,255,0.2)" : "transparent",
+                    color: selectedCategory === "ALL" ? "#4f7cff" : "#7a8394",
+                  }}
+                >
+                  All ({data.length})
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    style={{
+                      padding: "4px 10px",
+                      borderRadius: "4px",
+                      border: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      background: selectedCategory === cat ? "rgba(79,124,255,0.2)" : "transparent",
+                      color: selectedCategory === cat ? "#4f7cff" : "#7a8394",
+                    }}
+                  >
+                    {cat} ({data.filter(d => d.category === cat).length})
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Table Records with Reusable SortableList */}
             {loading ? (
               <div style={{ padding: "60px", textAlign: "center", color: "#4a5364" }}>Loading records…</div>
             ) : data.length === 0 ? (
@@ -673,33 +840,63 @@ export function Admin({}) {
                 <button onClick={openCreate} style={{ ...S.btnPrimary, marginTop: "20px" }}>Create first record</button>
               </div>
             ) : (
-              data.map(item => (
-                <div key={item.id} style={S.row}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px", minWidth: 0 }}>
-                    {(item.image_url) && (
-                      <Image src={item.image_url} alt="" width={48} height={48} style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "6px", flexShrink: 0 }} />
-                    )}
-                    <div style={{ minWidth: 0 }}>
-                      <div style={S.rowTitle}>{itemLabel(item)}</div>
-                      <div style={S.rowMeta}>
-                        id:{item.id}
-                        {item.slug && ` · /${item.slug}`}
-                        {item.published !== undefined && ` · ${item.published ? "published" : "draft"}`}
-                        {item.email && ` · ${item.email}`}
+              <SortableList
+                items={filteredData}
+                isSortable={activeTab !== "leads" && !searchQuery.trim() && selectedCategory === "ALL"}
+                filterActive={Boolean(searchQuery.trim() || selectedCategory !== "ALL")}
+                isSaving={isSavingOrder}
+                onReorder={handleReorder}
+                emptyState={
+                  <div style={{ padding: "40px", textAlign: "center", color: "#7a8394", fontSize: "14px" }}>
+                    No records match your search filter.
+                  </div>
+                }
+                renderItem={(item, index, { gripHandle }) => (
+                  <div
+                    key={item.id}
+                    style={{ ...S.row, padding: "12px 24px" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
+                      {gripHandle}
+                      {item.image_url && (
+                        <Image
+                          src={item.image_url}
+                          alt=""
+                          width={44}
+                          height={44}
+                          style={{ width: "44px", height: "44px", objectFit: "cover", borderRadius: "6px", flexShrink: 0 }}
+                        />
+                      )}
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <div style={S.rowTitle}>{itemLabel(item)}</div>
+                          {activeTab !== "leads" && item.order_index !== undefined && (
+                            <span style={{ fontSize: "11px", color: "#4f7cff", background: "rgba(79,124,255,0.12)", padding: "1px 6px", borderRadius: "4px", fontFamily: "'DM Mono', monospace" }}>
+                              #{item.order_index}
+                            </span>
+                          )}
+                        </div>
+                        <div style={S.rowMeta}>
+                          id:{item.id}
+                          {item.slug && ` · /${item.slug}`}
+                          {item.published !== undefined && ` · ${item.published ? "published" : "draft"}`}
+                          {item.email && ` · ${item.email}`}
+                          {item.category && ` · ${item.category}`}
+                        </div>
                       </div>
                     </div>
+                    <div style={S.rowActions}>
+                      {item.live_url && (
+                        <a href={item.live_url} target="_blank" rel="noreferrer" style={{ ...S.btnEdit, textDecoration: "none" }}>↗</a>
+                      )}
+                      <button onClick={() => openEdit(item)} style={S.btnEdit}>Edit</button>
+                      <button onClick={() => handleDelete(item.id, itemLabel(item))} style={S.btnDanger}>Delete</button>
+                    </div>
                   </div>
-                  <div style={S.rowActions}>
-                    {item.live_url && (
-                      <a href={item.live_url} target="_blank" rel="noreferrer" style={{ ...S.btnEdit, textDecoration: "none" }}>↗</a>
-                    )}
-                    <button onClick={() => openEdit(item)} style={S.btnEdit}>Edit</button>
-                    <button onClick={() => handleDelete(item.id, itemLabel(item))} style={S.btnDanger}>Delete</button>
-                  </div>
-                </div>
-              ))
+                )}
+              />
             )}
           </div>
         </div>
@@ -714,6 +911,9 @@ export function Admin({}) {
           onSaved={() => { setEditingItem(null); ; fetchData(); }}
         />
       )}
+
+      {/* Toast Notification */}
+      <AdminToast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }

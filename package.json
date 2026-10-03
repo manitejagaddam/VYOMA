@@ -16,6 +16,7 @@
     "@tsparticles/engine": "^4.4.0",
     "@tsparticles/react": "^4.4.0",
     "@tsparticles/slim": "^4.4.0",
+    "@types/sortablejs": "^1.15.9",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
@@ -23,6 +24,7 @@
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "sortablejs": "^1.15.7",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {

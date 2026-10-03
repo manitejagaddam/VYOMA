@@ -34,7 +34,24 @@ async function fetchRows(table: string, opts: FetchOpts = {}): Promise<DataRow[]
   }
   if (opts.order) q = q.order(opts.order.column, { ascending: opts.order.ascending ?? true });
   if (opts.limit) q = q.limit(opts.limit);
-  const { data } = await q;
+  const { data, error } = await q;
+
+  // Graceful fallback if order_index column is pending migration on that table
+  if (error && opts.order?.column === "order_index") {
+    let fallbackQ = db.from(table).select(opts.select || "*");
+    if (opts.filter) {
+      for (const [k, v] of Object.entries(opts.filter)) {
+        fallbackQ = fallbackQ.eq(k, v as string);
+      }
+    }
+    const fallbackCol = table === "posts" ? "published_at" : "id";
+    const fallbackAsc = table !== "posts";
+    fallbackQ = fallbackQ.order(fallbackCol, { ascending: fallbackAsc });
+    if (opts.limit) fallbackQ = fallbackQ.limit(opts.limit);
+    const { data: fallbackData } = await fallbackQ;
+    return (fallbackData as unknown as DataRow[]) || [];
+  }
+
   // Double-cast: Supabase's GenericStringError union doesn't overlap with DataRow,
   // so we go through `unknown` first — this is safe because fetchRows always returns
   // an array of plain objects when Supabase succeeds, or [] on error.
@@ -58,7 +75,7 @@ import {
 } from "./fallback";
 
 export const getProjects = cache(async () => {
-  const rows = await fetchRows("projects", { filter: { published: true }, order: { column: "order_index" } });
+  const rows = await fetchRows("projects", { filter: { published: true }, order: { column: "order_index", ascending: true } });
   return rows.length > 0 ? rows : (FALLBACK_PROJECTS as unknown as DataRow[]);
 });
 export const getProjectBySlug = cache(async (slug: string) => {
@@ -66,7 +83,7 @@ export const getProjectBySlug = cache(async (slug: string) => {
   return row || (FALLBACK_PROJECTS.find(x => x.slug === slug) as unknown as DataRow) || null;
 });
 export const getServices = cache(async () => {
-  const rows = await fetchRows("services", { order: { column: "id" } });
+  const rows = await fetchRows("services", { order: { column: "order_index", ascending: true } });
   return rows.length > 0 ? rows : (FALLBACK_SERVICES as unknown as DataRow[]);
 });
 export const getServiceBySlug = cache(async (slug: string) => {
@@ -74,7 +91,7 @@ export const getServiceBySlug = cache(async (slug: string) => {
   return row || (FALLBACK_SERVICES.find(x => x.slug === slug) as unknown as DataRow) || null;
 });
 export const getSolutions = cache(async () => {
-  const rows = await fetchRows("solutions", { order: { column: "id" } });
+  const rows = await fetchRows("solutions", { order: { column: "order_index", ascending: true } });
   return rows.length > 0 ? rows : (FALLBACK_SOLUTIONS as unknown as DataRow[]);
 });
 export const getSolutionBySlug = cache(async (slug: string) => {
@@ -82,7 +99,7 @@ export const getSolutionBySlug = cache(async (slug: string) => {
   return row || (FALLBACK_SOLUTIONS.find(x => x.slug === slug) as unknown as DataRow) || null;
 });
 export const getPosts = cache(async () => {
-  const rows = await fetchRows("posts", { filter: { published: true }, order: { column: "published_at", ascending: false } });
+  const rows = await fetchRows("posts", { filter: { published: true }, order: { column: "order_index", ascending: true } });
   return rows.length > 0 ? rows : (FALLBACK_POSTS as unknown as DataRow[]);
 });
 export const getPostBySlug = cache(async (slug: string) => {
@@ -90,10 +107,10 @@ export const getPostBySlug = cache(async (slug: string) => {
   return row || (FALLBACK_POSTS.find(x => x.slug === slug) as unknown as DataRow) || null;
 });
 export const getTeamMembers = cache(async () => {
-  const members = await fetchRows("team", { order: { column: "order_index" } });
+  const members = await fetchRows("team", { order: { column: "order_index", ascending: true } });
   return members.length > 0 ? members : (FALLBACK_TEAM as unknown as DataRow[]);
 });
 export const getFaqs = cache(async () => {
-  const rows = await fetchRows("faqs", { order: { column: "order_index" } });
+  const rows = await fetchRows("faqs", { order: { column: "order_index", ascending: true } });
   return rows.length > 0 ? rows : (FALLBACK_FAQS as unknown as DataRow[]);
 });
