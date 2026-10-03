@@ -177,9 +177,10 @@ export async function POST(
       count: parsedIds.length,
       ids: parsedIds,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error during reorder.";
     return NextResponse.json(
-      { error: err?.message || "Internal server error during reorder." },
+      { error: message },
       { status: 500 }
     );
   }

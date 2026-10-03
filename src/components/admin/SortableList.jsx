@@ -68,9 +68,25 @@ export function SortableList({
   const containerRef = useRef(null);
   const sortableInstanceRef = useRef(null);
   const itemsRef = useRef(items);
-  itemsRef.current = items;
   const onReorderRef = useRef(onReorder);
-  onReorderRef.current = onReorder;
+  const isDisabled = disabled || isSaving || filterActive;
+  const disabledRef = useRef(isDisabled);
+
+  // Safely sync refs in effects outside of render phase
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+
+  useEffect(() => {
+    onReorderRef.current = onReorder;
+  }, [onReorder]);
+
+  useEffect(() => {
+    disabledRef.current = isDisabled;
+    if (sortableInstanceRef.current) {
+      sortableInstanceRef.current.option("disabled", isDisabled);
+    }
+  }, [isDisabled]);
 
   // Initialize SortableJS on container once when sortable
   useEffect(() => {
@@ -94,7 +110,7 @@ export function SortableList({
       ghostClass: "vyoma-sortable-ghost",
       chosenClass: "vyoma-sortable-chosen",
       dragClass: "vyoma-sortable-drag",
-      disabled: disabled || isSaving || filterActive,
+      disabled: disabledRef.current,
       touchStartThreshold: 3, // Prevent accidental drags on touch tap
       onStart: (evt) => {
         const handle = evt.item.querySelector(".drag-handle");
@@ -141,13 +157,6 @@ export function SortableList({
       }
     };
   }, [isSortable]); // Do not re-create Sortable on every items or state change!
-
-  // Update disabled state dynamically without destroying instance
-  useEffect(() => {
-    if (sortableInstanceRef.current) {
-      sortableInstanceRef.current.option("disabled", disabled || isSaving || filterActive);
-    }
-  }, [disabled, isSaving, filterActive]);
 
   if (!items || items.length === 0) {
     return emptyState || null;
