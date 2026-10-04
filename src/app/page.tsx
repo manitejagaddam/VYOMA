@@ -3,8 +3,8 @@ import { getProjects, getServices, getSolutions, getTeamMembers, getPosts, getFa
 import { HomeClient } from "@/components/pages/HomeClient";
 
 export const metadata: Metadata = {
-  title: "VYOMA — Custom Software, AI & Product Design Agency",
-  description: "VYOMA designs and builds scalable web apps, mobile products, and AI systems. Design, engineering, and intelligence — one connected team.",
+  title: "VYOMA — Custom Software, AI &amp; Product Design Agency",
+  description: "VYOMA specializes in custom software development, AI solutions, and mobile app design for scalable digital products.",
 };
 
 export default async function HomePage() {

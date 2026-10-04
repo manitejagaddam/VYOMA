@@ -100,54 +100,62 @@ export function Navbar({ className }: { className?: string }) {
         <div className="flex-1 hidden lg:flex justify-center">
           <Menu setActive={setActive}>
             <MenuItem setActive={setActive} active={active} item="Services" onClick={() => nav("/services")}>
-              <div className="grid grid-cols-2 gap-10 p-4 text-sm w-[36rem]">
+              <div className="grid grid-cols-2 gap-10 p-4 text-sm w-[42rem]">
                 <div className="flex flex-col space-y-4">
-                  <h4 className="font-bold text-black dark:text-white">Design & Development</h4>
+                  <h4 className="font-bold text-black dark:text-white mb-1 border-b border-black/10 dark:border-white/10 pb-2">Engineering & Design</h4>
+                  <HoveredLink href="/services/custom-software-development">Custom Software Development</HoveredLink>
+                  <HoveredLink href="/services/web-development">Web App Development</HoveredLink>
+                  <HoveredLink href="/services/mobile-app-development">Mobile App Development</HoveredLink>
+                  <HoveredLink href="/services/saas-development">SaaS Platform Development</HoveredLink>
                   <HoveredLink href="/services/ui-ux-product-design">UI/UX & Product Design</HoveredLink>
-                  <HoveredLink href="/services/web-development">Web Development</HoveredLink>
-                  <HoveredLink href="/services/mobile-app-development">Mobile Apps</HoveredLink>
-                  <HoveredLink href="/services/saas-development">SaaS Development</HoveredLink>
                 </div>
                 <div className="flex flex-col space-y-4">
-                  <h4 className="font-bold text-black dark:text-white">Intelligence & Infra</h4>
-                  <HoveredLink href="/services/ai-genai">AI & GenAI</HoveredLink>
-                  <HoveredLink href="/services/chatbots-conversational-ai">Chatbots</HoveredLink>
-                  <HoveredLink href="/services/backend-cloud">Backend & Cloud</HoveredLink>
-                  <HoveredLink href="/services/automation-integrations">Automation</HoveredLink>
+                  <h4 className="font-bold text-black dark:text-white mb-1 border-b border-black/10 dark:border-white/10 pb-2">Intelligence & Cloud</h4>
+                  <HoveredLink href="/services/ai-genai">AI & GenAI Solutions</HoveredLink>
+                  <HoveredLink href="/services/chatbots-conversational-ai">Conversational AI & Chatbots</HoveredLink>
+                  <HoveredLink href="/services/backend-cloud">Cloud Architecture</HoveredLink>
+                  <HoveredLink href="/services/automation-integrations">Workflow Automation</HoveredLink>
                 </div>
               </div>
             </MenuItem>
 
             <MenuItem setActive={setActive} active={active} item="Solutions" onClick={() => nav("/solutions")}>
-              <div className="flex flex-col space-y-4 text-sm p-2 w-[16rem]">
-                <HoveredLink href="/solutions/startup-solutions">For Startups</HoveredLink>
+              <div className="flex flex-col space-y-4 text-sm p-4 w-[22rem]">
                 <HoveredLink href="/solutions/mvp-development">MVP Development</HoveredLink>
+                <HoveredLink href="/solutions/enterprise-software">Enterprise Software Systems</HoveredLink>
+                <HoveredLink href="/solutions/ai-transformation">Enterprise AI Transformation</HoveredLink>
                 <HoveredLink href="/solutions/business-automation">Business Automation</HoveredLink>
-                <HoveredLink href="/solutions/ai-transformation">AI Transformation</HoveredLink>
-                <HoveredLink href="/solutions/enterprise-software">Enterprise Software</HoveredLink>
+                <HoveredLink href="/solutions/startup-solutions">Scaling Startups</HoveredLink>
+              </div>
+            </MenuItem>
+
+            <MenuItem setActive={setActive} active={active} item="Work" onClick={() => nav("/work")}>
+              <div className="flex flex-col space-y-4 text-sm p-4 w-[22rem]">
+                <h4 className="font-bold text-black dark:text-white mb-1 border-b border-black/10 dark:border-white/10 pb-2">Featured Case Studies</h4>
+                <HoveredLink href="/work/codetitan">CodeTitan - AI Dev Platform</HoveredLink>
+                <HoveredLink href="/work/knowledge-in-motion">Knowledge in Motion - RAG App</HoveredLink>
+                <HoveredLink href="/work/synapse-saas">Synapse - FinTech SaaS</HoveredLink>
+                <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10">
+                  <HoveredLink href="/work">View All Work &rarr;</HoveredLink>
+                </div>
               </div>
             </MenuItem>
 
             <MenuItem setActive={setActive} active={active} item="Company" onClick={() => nav("/about")}>
-              <div className="flex flex-col space-y-4 text-sm p-2 w-[12rem]">
+              <div className="flex flex-col space-y-4 text-sm p-4 w-[16rem]">
                 <HoveredLink href="/about">About VYOMA</HoveredLink>
                 <HoveredLink href="/team">Our Team</HoveredLink>
                 <HoveredLink href="/process">Methodology</HoveredLink>
-                <HoveredLink href="/engagement-models">Engagement Models</HoveredLink>
-                <HoveredLink href="/insights">Insights</HoveredLink>
+                <HoveredLink href="/insights">Insights & Guides</HoveredLink>
               </div>
             </MenuItem>
-
-            <NextLink href="/work" onMouseEnter={() => setActive(null)} className="text-black dark:text-white text-sm font-medium hover:opacity-80 transition-opacity ml-4 self-center">
-              Work
-            </NextLink>
           </Menu>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
           <ThemeToggle />
-          <NextLink href="/contact" className="hidden md:flex bg-black dark:bg-white dark:text-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
-            Contact Us
+          <NextLink href="/contact" className="hidden md:flex bg-gradient-to-br from-[#caac4b] via-[#E6D59A] to-[#C0C0C0] text-[#1a1a1a] px-6 py-2.5 rounded-full text-sm font-bold hover:brightness-110 transition-all shadow-[0_4px_15px_rgba(212,175,55,0.3)] hover:scale-105">
+            Book a Discovery Call
           </NextLink>
           <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 text-black dark:text-white" aria-label="Toggle menu">
             {mobileOpen ? (

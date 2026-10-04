@@ -20,6 +20,23 @@ import { FinalCTA } from "@/components/shared/FinalCTA";
 import { Carousel } from "@/components/ui/apple-cards-carousel";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 
+function UniformCTAPair() {
+  return (
+    <div className="flex flex-wrap gap-4 items-center">
+      <Link 
+        to="/contact" 
+        className="inline-flex items-center justify-center px-6 py-3 text-sm md:text-base font-bold text-black bg-[var(--accent)] hover:brightness-110 rounded-full transition-all shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        aria-label="Contact VYOMA to start a project"
+      >
+        Book a Discovery Call
+      </Link>
+      <Btn to="/work" variant="outline" aria-label="Explore Our Work">
+        Explore Our Work
+      </Btn>
+    </div>
+  );
+}
+
 function HeroSection({}) {
   const [activeStage, setActiveStage] = useState(0);
   return (
@@ -40,20 +57,25 @@ function HeroSection({}) {
 
       <div className="hero-inner">
         <div className="hero-copy">
-          <p className="eyebrow hero-eyebrow">VYOMA / Design. Build. Intelligence.</p>
+          <h1 className="eyebrow hero-eyebrow">VYOMA / Custom Software Development Agency</h1>
           <div className="hero-headline text-left relative">
             <span className="block mb-2 text-gradient">We build</span>
             <div className="relative inline-block w-full h-[1.2em]">
               <FlipWords 
-                words={["AI systems.", "SaaS platforms.", "digital products.", "modern software."]} 
+                words={["custom software.", "AI systems.", "SaaS platforms.", "digital products."]} 
                 className="text-[var(--accent)] block -ml-2"
               />
             </div>
           </div>
-          <p className="hero-body">VYOMA is a technology agency helping startups and businesses transform ideas into scalable digital products through design, engineering and AI.</p>
-          <div className="hero-actions">
-            <Btn to="/contact" variant="primary">Start a Project</Btn>
-            <Btn to="/work"    variant="outline">Explore Our Work</Btn>
+          <p className="hero-body">
+            VYOMA is a technology agency helping startups and businesses transform ideas into scalable digital products through design, engineering and AI.{" "}
+            <Link to="/services/custom-software-development" className="text-[var(--accent)] hover:underline">
+              Explore our custom software development services
+            </Link> for CRM, ERP, and internal tools.
+          </p>
+          <div className="hero-actions flex flex-col gap-3 mt-8">
+            <UniformCTAPair />
+            <span className="text-sm font-mono text-[var(--accent)] opacity-80 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></span> Book a 20-minute Discovery Call</span>
           </div>
           <div className="hero-pillars">
             <span>Design</span><span className="pillar-dot">·</span>
@@ -95,7 +117,7 @@ function HeroSection({}) {
 function CapabilitySnapshot() {
   const pillars = [
     { no: "01", title: "Design",       icon: "◈", desc: "UI/UX, product strategy, design systems, and prototypes that clarify what a product should become.", items: ["UI/UX", "Product Design", "Design Systems", "Prototyping"] },
-    { no: "02", title: "Engineering",  icon: "⬡", desc: "Web, mobile, backend, cloud, APIs, SaaS, and custom software built for long-term use.", items: ["Web Apps", "Mobile", "Backend", "Cloud & APIs", "SaaS"] },
+    { no: "02", title: "Engineering",  icon: "⬡", desc: "Our custom software development covers CRM systems, ERP platforms, internal tools, and business platforms to streamline operations and scale growth.", items: ["Web Apps", "Mobile", "Backend", "Cloud & APIs", "SaaS"] },
     { no: "03", title: "Intelligence", icon: "◎", desc: "AI, GenAI, RAG, agents, chatbots, automation, and data-driven systems with a real job to do.", items: ["Generative AI", "AI Agents", "RAG", "Chatbots", "Automation"] },
   ];
   return (
@@ -211,7 +233,7 @@ function SelectedWork({ projects = [] }) {
         <SectionKicker left="Selected work" right="Built for real problems. Designed for real users." />
         <div className="work-title-row">
           <h2 className="text-xl md:text-5xl font-bold font-sans">Evidence before promises.</h2>
-          <Btn to="/work" variant="outline">View all work</Btn>
+          <UniformCTAPair />
         </div>
       </div>
       <div className="w-full h-full pb-10">
@@ -223,6 +245,19 @@ function SelectedWork({ projects = [] }) {
 
 function WhatWeBuild({ services = [] }) {
   const sortedServices = [...services].sort((a, b) => a.no - b.no);
+
+  const serviceBenefits = {
+    "ui-ux-product-design": "See how we design for scale.",
+    "web-development": "See how we engineer for performance.",
+    "mobile-app-development": "See how we build native experiences.",
+    "ai-genai": "See how we build autonomous agents.",
+    "chatbots-conversational-ai": "See how we automate conversations.",
+    "custom-software": "See how we architect custom platforms.",
+    "saas-development": "See how we scale multi-tenant SaaS.",
+    "automation-integrations": "See how we eliminate manual work.",
+    "backend-cloud": "See how we build robust infrastructure.",
+    "digital-marketing": "See how we amplify digital products.",
+  };
 
   const carouselItems = sortedServices.map(b => (
     <div className="w-[90vw] sm:w-[22rem] md:w-96 lg:w-[28rem] flex-shrink-0 h-[40rem]" key={b.slug}>
@@ -251,10 +286,13 @@ function WhatWeBuild({ services = [] }) {
             ))}
           </p>
           
-          <div className="mt-auto pt-4">
-            <Btn to={`/services/${b.slug}`} variant="cta" aria-label={`Explore ${b.title} Service`}>
-              Explore Service
+          <div className="mt-auto pt-4 flex flex-col items-start gap-2">
+            <Btn to={`/services/${b.slug}`} variant="cta" aria-label={`Explore ${b.title}`}>
+              Explore {b.title}
             </Btn>
+            <span className="text-xs text-[var(--accent)] font-mono opacity-90 block mt-1">
+              {serviceBenefits[b.slug] || "Explore our tailored solutions."}
+            </span>
           </div>
         </div>
       </div>
@@ -270,7 +308,7 @@ function WhatWeBuild({ services = [] }) {
             <div className="flex items-center gap-6">
               <span className="hidden md:inline">What VYOMA builds across every engagement</span>
               <div className="font-sans normal-case tracking-normal">
-                <Btn to="/services" variant="outline">View all services</Btn>
+                <UniformCTAPair />
               </div>
             </div>
           } 
@@ -314,12 +352,149 @@ function WhyVYOMA({}) {
   );
 }
 
+function EnterpriseSoftwareCapabilities() {
+  const capabilities = [
+    { title: "Security & Compliance", desc: "SOC 2 Type II compliant architectures, zero-trust security models, and enterprise-grade encryption at rest and in transit." },
+    { title: "Platform Modernization", desc: "Refactoring legacy monoliths into scalable microservices and serverless architectures without operational downtime." },
+    { title: "Data Architecture", desc: "High-throughput data pipelines, event-driven integrations, and scalable data warehouses built for enterprise AI and analytics." },
+    { title: "Governance & Control", desc: "Granular Role-Based Access Control (RBAC), comprehensive audit logging, and strict data residency and privacy adherence." }
+  ];
+
+  return (
+    <section className="section enterprise-capabilities has-bg-dot overflow-hidden" style={{ padding: "100px 6%" }}>
+      <div className="max-w-7xl mx-auto px-4 w-full">
+        <SectionKicker left="Enterprise" right="Scalable, secure, and compliant" />
+        <div className="mb-12 mt-8">
+          <h2 className="text-3xl md:text-5xl font-bold font-sans mb-4">Enterprise-Grade Custom Software</h2>
+          <p className="text-neutral-600 dark:text-neutral-400 max-w-2xl text-lg mt-4">
+            We build platforms that scale securely. From complex data architectures to platform modernization, our enterprise software capabilities ensure your business can grow without technical ceilings.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {capabilities.map((cap, i) => (
+            <div key={i} className="p-8 border border-black/10 dark:border-white/10 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm group hover:border-[var(--accent)]/50 transition-colors">
+              <h3 className="text-xl font-bold mb-3 dark:text-white">{cap.title}</h3>
+              <p className="text-neutral-600 dark:text-neutral-400">{cap.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 p-8 border border-[var(--accent)]/30 rounded-xl bg-[var(--accent)]/5 relative overflow-hidden">
+          <Spotlight className="-top-40 left-0 opacity-50" fill="white" />
+          <h3 className="text-xs font-bold mb-3 uppercase tracking-widest text-[var(--accent)] relative z-10">Exemplar Case Snippet</h3>
+          <p className="text-neutral-800 dark:text-neutral-200 text-lg leading-relaxed relative z-10">
+            <strong>Global FinTech Platform:</strong> Delivered a multi-tenant SaaS application handling $50M+ in daily transaction flows. The architecture utilized scalable microservices and robust data partitioning, ensuring 99.99% uptime while maintaining strict financial compliance and granular audit logging across 200+ enterprise organizations.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CustomSoftwareDetails() {
+  return (
+    <section className="section custom-software-details has-bg-grid overflow-hidden" style={{ padding: "100px 6%" }}>
+      <div className="max-w-7xl mx-auto px-4 w-full">
+        <SectionKicker left="Deep Dive" right="Custom Software Strategy" />
+        <div className="mb-12 mt-8">
+          <h2 className="text-3xl md:text-5xl font-bold font-sans mb-4">The anatomy of custom software.</h2>
+          <p className="text-neutral-600 dark:text-neutral-400 max-w-2xl text-lg mt-4">
+            Building custom software isn&apos;t just about writing code. It&apos;s about measurable outcomes, understanding timelines, managing risks, and making the right architectural trade-offs.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left Column: Outcomes, Timelines, Risks */}
+          <div className="space-y-8">
+            <div className="p-6 border border-black/10 dark:border-white/10 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm group hover:border-black/20 dark:hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-3 dark:text-white flex items-center gap-3"><span className="text-xl">📈</span> Measurable Outcomes</h3>
+              <ul className="list-disc pl-6 text-neutral-600 dark:text-neutral-400 space-y-2 marker:text-[var(--accent)]">
+                <li><strong>Efficiency:</strong> Up to 40% reduction in manual operational overhead.</li>
+                <li><strong>Integration:</strong> Zero data silos across core business units.</li>
+                <li><strong>ROI:</strong> Custom IP that becomes a valuated company asset.</li>
+              </ul>
+            </div>
+            
+            <div className="p-6 border border-black/10 dark:border-white/10 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm group hover:border-black/20 dark:hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-3 dark:text-white flex items-center gap-3"><span className="text-xl">⏱️</span> Typical Timelines</h3>
+              <ul className="list-disc pl-6 text-neutral-600 dark:text-neutral-400 space-y-2 marker:text-[var(--accent)]">
+                <li><strong>Discovery & Architecture:</strong> 2-4 weeks</li>
+                <li><strong>Core MVP Build:</strong> 8-12 weeks</li>
+                <li><strong>Full Enterprise Rollout:</strong> 4-6 months</li>
+              </ul>
+            </div>
+
+            <div className="p-6 border border-black/10 dark:border-white/10 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm group hover:border-black/20 dark:hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-3 dark:text-white flex items-center gap-3"><span className="text-xl">⚠️</span> Risk Considerations</h3>
+              <ul className="list-disc pl-6 text-neutral-600 dark:text-neutral-400 space-y-2 marker:text-[var(--accent)]">
+                <li><strong>Scope Creep:</strong> Mitigated by strict phase-gating and MVP-first methodology.</li>
+                <li><strong>Technical Debt:</strong> Managed through continuous refactoring and CI/CD pipelines.</li>
+                <li><strong>Adoption:</strong> Solved via human-in-the-loop design and change management.</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Right Column: Comparison & Playbooks */}
+          <div className="space-y-8">
+            <div className="p-8 border border-[var(--accent)]/30 rounded-xl bg-[var(--accent)]/5 relative overflow-hidden">
+              <Spotlight className="-top-40 left-0 opacity-30" fill="white" />
+              <h3 className="text-xl font-bold mb-6 dark:text-white relative z-10">Build vs. Buy vs. Hybrid</h3>
+              <div className="relative z-10 space-y-5">
+                <div>
+                  <strong className="block text-[var(--accent)] mb-1">1. Buy (Off-the-shelf)</strong>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Fastest to deploy, but forces you to change your business processes to fit the software. High recurring per-seat licensing costs at scale.</p>
+                </div>
+                <div>
+                  <strong className="block text-[var(--accent)] mb-1">2. Build (Custom)</strong>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Fits your exact logic perfectly and builds company equity. Higher upfront investment, but zero arbitrary licensing fees.</p>
+                </div>
+                <div>
+                  <strong className="block text-[var(--accent)] mb-1">3. Hybrid (VYOMA approach)</strong>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">We orchestrate managed services (Auth, DBs, AI models) with custom business logic. You get custom software without reinventing the wheel.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 border border-black/10 dark:border-white/10 rounded-xl bg-[#0a0b0f] text-white flex flex-col justify-between">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold mb-3 font-display tracking-wide">Technical Playbooks</h3>
+                <p className="text-neutral-400 text-sm">
+                  Download our architectural standards, security checklists, and AI integration playbooks used across our enterprise deployments.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <button className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors text-sm font-mono text-left w-full group">
+                  <span className="truncate mr-4 text-neutral-300 group-hover:text-white transition-colors">Custom_Software_Architecture_Guide.pdf</span>
+                  <span className="text-[var(--accent)] font-bold">↓</span>
+                </button>
+                <button className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors text-sm font-mono text-left w-full group">
+                  <span className="truncate mr-4 text-neutral-300 group-hover:text-white transition-colors">Enterprise_Security_Checklist.pdf</span>
+                  <span className="text-[var(--accent)] font-bold">↓</span>
+                </button>
+                <button className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors text-sm font-mono text-left w-full group">
+                  <span className="truncate mr-4 text-neutral-300 group-hover:text-white transition-colors">Build_vs_Buy_Analysis_Matrix.xlsx</span>
+                  <span className="text-[var(--accent)] font-bold">↓</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-20 text-center flex flex-col items-center justify-center border-t border-black/10 dark:border-white/10 pt-16">
+          <Link to="/contact" className="inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-[#1a1a1a] bg-gradient-to-br from-[#caac4b] via-[#E6D59A] to-[#C0C0C0] hover:brightness-110 rounded-full transition-all shadow-[0_4px_30px_rgba(212,175,55,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#caac4b] focus-visible:ring-offset-2 focus-visible:ring-offset-black" aria-label="Book a Discovery Call with VYOMA">Book a Discovery Call</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SolutionsPreview({ solutions = [] }) {
   return (
     <section className="section solutions-preview">
       <SectionKicker left="Solutions" right="Start with the business problem" />
       <div className="solutions-header">
-        <h2>What kind of project are you working on?</h2>
+        <h2>Custom Software Development Solutions</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         {solutions.map(sol => (
@@ -489,21 +664,85 @@ function TeamPreview({ team = [] }) {
 function FeaturedCaseStudy({ projects = [] }) {
   const project = projects[0];
   if (!project) return null;
+  
+  const isDeepDive = !!project.metrics;
+
   return (
-    <section className="section featured-case">
-      <SectionKicker left="Case study spotlight" right="One project, in depth" />
-      <div className="featured-case-inner">
-        <figure className="relative min-h-[320px] overflow-hidden rounded-xl">
-          {project.image_url && <Image src={project.image_url} alt={project.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />}
-        </figure>
-        <div className="featured-case-content">
-          <span className="featured-cat">{Array.isArray(project.role) ? project.role.join(" · ") : (()=>{ try{ const p=JSON.parse(project.role); return Array.isArray(p)?p.join(" · "):project.role; }catch{return project.role;} })()}</span>
-          <h2>{project.title}</h2>
-          <p>{project.overview}</p>
-          <div className="featured-stack">
-            {(project.tags || []).map(s => <span key={s}>{s}</span>)}
+    <section className="section featured-case has-bg-dot overflow-hidden" style={{ padding: "100px 6%" }}>
+      <div className="max-w-7xl mx-auto px-4 w-full">
+        <SectionKicker left="Case study spotlight" right="One project, in depth" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12">
+          
+          <div className="lg:col-span-5 flex flex-col justify-center">
+            <span className="text-[var(--accent)] font-mono text-sm tracking-widest uppercase mb-4 block">{project.category}</span>
+            <h2 className="text-4xl md:text-6xl font-bold font-sans mb-6">{project.title}</h2>
+            <p className="text-neutral-600 dark:text-neutral-400 text-lg mb-8 leading-relaxed">
+              {project.summary}
+            </p>
+            
+            {isDeepDive && (
+              <div className="space-y-6 mb-8">
+                <div>
+                  <strong className="block text-neutral-800 dark:text-white mb-2 font-display">The Problem</strong>
+                  <p className="text-neutral-600 dark:text-neutral-400 text-sm">{project.problem}</p>
+                </div>
+                <div>
+                  <strong className="block text-neutral-800 dark:text-white mb-2 font-display">Our Approach</strong>
+                  <p className="text-neutral-600 dark:text-neutral-400 text-sm">{project.approach}</p>
+                </div>
+                <div>
+                  <strong className="block text-neutral-800 dark:text-white mb-2 font-display">Technology Decisions</strong>
+                  <p className="text-neutral-600 dark:text-neutral-400 text-sm">{project.technology_decisions}</p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              {(project.stack || project.tags || []).map(s => <span key={s} className="px-3 py-1 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-full text-xs font-mono text-neutral-700 dark:text-neutral-300">{s}</span>)}
+            </div>
+
+            <div className="flex items-center gap-6">
+              <Btn to={`/work/${project.slug}`} variant="primary">Read Full Case Study</Btn>
+              {isDeepDive && project.downloadable_pdf && (
+                <a href="#" className="flex items-center gap-2 text-sm font-bold text-[var(--accent)] hover:text-black dark:hover:text-white transition-colors group">
+                  <span>Download PDF</span>
+                  <span className="group-hover:translate-y-1 transition-transform">↓</span>
+                </a>
+              )}
+            </div>
           </div>
-          <Btn to={`/work/${project.slug}`} variant="primary">View Case Study</Btn>
+
+          <div className="lg:col-span-7 flex flex-col justify-center gap-6">
+            <figure className="relative h-[300px] md:h-[400px] w-full overflow-hidden rounded-xl border border-black/10 dark:border-white/10 shadow-2xl">
+              {(project.image_url || project._localImage) && <Image src={project.image_url || project._localImage} alt={project.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />}
+            </figure>
+
+            {isDeepDive && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <div className="p-6 bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl backdrop-blur-sm">
+                  <span className="block text-[var(--accent)] text-xs font-mono uppercase tracking-wider mb-2">Time to Value</span>
+                  <p className="text-neutral-800 dark:text-white text-sm font-medium">{project.metrics.time_to_value}</p>
+                </div>
+                <div className="p-6 bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl backdrop-blur-sm">
+                  <span className="block text-[var(--accent)] text-xs font-mono uppercase tracking-wider mb-2">Performance</span>
+                  <p className="text-neutral-800 dark:text-white text-sm font-medium">{project.metrics.performance_improvements}</p>
+                </div>
+                <div className="p-6 bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl backdrop-blur-sm">
+                  <span className="block text-[var(--accent)] text-xs font-mono uppercase tracking-wider mb-2">Return on Investment</span>
+                  <p className="text-neutral-800 dark:text-white text-sm font-medium">{project.metrics.return_on_investment}</p>
+                </div>
+              </div>
+            )}
+            
+            {isDeepDive && (
+              <div className="p-6 bg-[var(--accent)]/10 dark:bg-[#0a0b0f] border border-[var(--accent)]/30 rounded-xl mt-2 relative overflow-hidden">
+                <Spotlight className="-top-40 left-0 opacity-20" fill="white" />
+                <span className="block text-[var(--accent)] text-xs font-mono uppercase tracking-wider mb-2 relative z-10">Lessons Learned</span>
+                <p className="text-neutral-700 dark:text-neutral-300 text-sm italic relative z-10">&quot;{project.lessons_learned}&quot;</p>
+              </div>
+            )}
+          </div>
+          
         </div>
       </div>
     </section>
@@ -514,10 +753,10 @@ function InsightsPreview({ posts = [] }) {
   const recentPosts = posts.slice(0, 3);
   return (
     <section className="section home-insights">
-      <SectionKicker left="Insights" right="Thinking from the work" />
+      <SectionKicker left="Insights & Guides" right="Thinking from the work" />
       <div className="insights-title-row">
-        <h2>Notes on product, engineering, and AI.</h2>
-        <Btn to="/insights" variant="outline">All insights</Btn>
+        <h2>Guides, tutorials, and notes on engineering.</h2>
+        <Btn to="/insights" variant="outline">View Content Hub</Btn>
       </div>
       <div className="insights-grid">
         {recentPosts.map(post => (
@@ -571,6 +810,8 @@ export function Home({ projects, services, solutions, team, posts, faqs }) {
       <WhatWeBuild services={services} />
       <SelectedWork projects={projects} />
       <WhyVYOMA />
+      <EnterpriseSoftwareCapabilities />
+      <CustomSoftwareDetails />
       <SolutionsPreview solutions={solutions} />
       <ProcessPreview />
       <TechPreview />

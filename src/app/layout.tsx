@@ -41,19 +41,21 @@ const getBaseUrl = () => {
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
   title: {
-    default: "VYOMA — Custom Software, AI & Product Design Agency",
+    default: "VYOMA — Custom Software Development & AI Agency",
     template: "%s — VYOMA",
   },
   description:
-    "VYOMA is a technology agency that designs and builds scalable web apps, mobile products, and AI systems for ambitious startups and businesses. Design, engineering, and intelligence — one connected team.",
+    "VYOMA specializes in custom software development, AI solutions, and mobile app design for scalable digital products.",
   keywords: [
-    "software agency",
+    "custom software development",
+    "custom software development services",
+    "custom software development company",
     "AI development",
     "web development",
     "mobile app development",
     "product design",
-    "SaaS development",
     "custom software",
+    "SaaS development",
   ],
   authors: [{ name: "VYOMA Technologies" }],
   creator: "VYOMA Technologies",
@@ -65,9 +67,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://www.vyoma.world",
     siteName: "VYOMA",
-    title: "VYOMA — Custom Software, AI & Product Design Agency",
+    title: "VYOMA — Custom Software Development & AI Agency",
     description:
-      "Technology agency for startups — design, engineering, and AI in one connected team. We build scalable web apps, mobile products, and intelligent systems.",
+      "VYOMA specializes in custom software development, AI solutions, and mobile app design for scalable digital products.",
     images: [
       {
         url: "/og-image.jpg",
@@ -79,8 +81,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VYOMA — Custom Software, AI & Product Design Agency",
-    description: "Technology agency for startups — design, engineering, and AI in one connected team.",
+    title: "VYOMA — Custom Software Development & AI Agency",
+    description: "VYOMA specializes in custom software development, AI solutions, and mobile app design for scalable digital products.",
     images: ["/og-image.jpg"],
   },
   robots: {
